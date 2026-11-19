@@ -27,7 +27,7 @@ a{color:inherit}
 .skip:focus{top:12px}
 
 /* top bar */
-.bar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px var(--pad);pointer-events:none}
+.bar{position:fixed;inset:0 0 auto 0;z-index:38;display:flex;align-items:center;justify-content:space-between;padding:16px var(--pad);pointer-events:none}
 .bar>*{pointer-events:auto}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
 .brand img{width:42px;height:42px;border-radius:50%;display:block;box-shadow:0 0 0 2px var(--yellow)}
@@ -130,8 +130,39 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 .nogl .journey{height:auto!important}
 .nogl .stage{display:none}
 
+/* language switcher */
+.lang{position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:40}
+.lang-btn{font:500 .95rem/1 var(--sans);display:inline-flex;align-items:center;gap:8px;padding:10px 16px 10px 13px;border-radius:999px;border:2px solid var(--yellow);background:rgba(10,24,80,.55);color:var(--yellow);cursor:pointer;backdrop-filter:blur(6px);box-shadow:0 4px 0 #8a6a00,0 8px 18px rgba(4,10,40,.35);transform:translateY(0);transition:transform .12s,box-shadow .12s,background .2s}
+.lang-btn:hover{background:rgba(255,214,10,.14)}
+.lang-btn:active,.lang-btn[aria-expanded="true"]{transform:translateY(3px);box-shadow:0 1px 0 #8a6a00,0 4px 10px rgba(4,10,40,.35)}
+.lang-btn svg{width:18px;height:18px;flex:none}
+.lang-btn .cur{background:var(--yellow);color:var(--navy);font-weight:700;font-size:.78rem;border-radius:999px;padding:3px 8px}
+.lang-btn .caret{width:12px;height:12px;transition:transform .2s}
+.lang-btn[aria-expanded="true"] .caret{transform:rotate(180deg)}
+.lang-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);min-width:250px;white-space:nowrap;margin:0;padding:8px;list-style:none;background:var(--navy);border:2px solid var(--yellow);border-radius:18px;box-shadow:0 18px 40px rgba(4,10,40,.55)}
+.lang-menu[hidden]{display:none}
+.lang-menu button{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:11px 14px;border-radius:12px;cursor:pointer;color:var(--paper);font-size:1rem}
+.lang-menu button:hover,.lang-menu button:focus-visible{background:rgba(255,214,10,.14);outline:none}
+.lang-menu button[aria-checked="true"]{color:var(--yellow);font-weight:700}
+.lang-menu button[aria-checked="true"]::after{content:"";width:8px;height:14px;border:solid var(--yellow);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-2px,-2px)}
+.lang-menu small{color:var(--sky);font-size:.78rem;font-weight:400}
+html:lang(zh-Hans){--serif:'Noto Serif SC','Noto Serif TC','Fraunces',serif;--sans:'Noto Sans SC','Noto Sans TC',system-ui,sans-serif}
+html:lang(en){--serif:'Fraunces','Noto Serif TC',serif}
+html:lang(en) .hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);letter-spacing:0;line-height:1.02;font-variation-settings:'SOFT' 100,'opsz' 144}
+html:lang(en) .label h2{letter-spacing:0}
+html:lang(en) .home3d .face b,html:lang(en) .gb3d .face b{letter-spacing:.01em}
+html:lang(en) .gb3d .face b{font-size:1.32rem}
+@media (max-width:760px){
+  .lang{top:16px}
+  .lang-btn{padding:9px 12px 9px 10px;gap:6px}
+  .lang-btn .word{display:none}
+  html:lang(en) .gb3d .face b{font-size:1.05rem}
+  html:lang(en) .hero h1{font-size:2.1rem;line-height:1.05}
+  html:lang(en) .hero p{font-size:.92rem;line-height:1.65}
+  .bar .btn{padding:10px 14px}
+}
 /* 3D home button */
-.home3d{position:fixed;top:14px;left:50%;z-index:36;border:0;padding:0;background:none;cursor:pointer;perspective:600px;font:inherit;-webkit-tap-highlight-color:transparent;
+.home3d{position:fixed;top:76px;left:50%;z-index:36;border:0;padding:0;background:none;cursor:pointer;perspective:600px;font:inherit;-webkit-tap-highlight-color:transparent;
   --rx:18deg;--ry:0deg;--lift:0px;transform:translate(-50%,-24px);opacity:0;visibility:hidden;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1),visibility .3s}
 .home3d.on{opacity:1;visibility:visible;transform:translate(-50%,0)}
 .home3d .tilt{position:relative;display:block;width:172px;height:58px;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--lift));transition:transform .18s ease-out}
@@ -186,7 +217,7 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 #guestbook .status.ok{color:var(--yellow)}
 #guestbook .status.err{color:#FF9EA1}
 #guestbook .wall h3{padding-right:88px;font-family:var(--serif);font-weight:900;font-size:1.25rem;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline}
-#guestbook .wall h3 span{font-family:var(--sans);font-weight:400;font-size:.85rem;color:var(--sky)}
+#guestbook .wall h3 #gbTotal{font-family:var(--sans);font-weight:400;font-size:.85rem;color:var(--sky)}
 #gbList{list-style:none;margin:0;padding:0 6px 0 0;display:grid;gap:12px;max-height:min(56vh,520px);overflow:auto}
 #gbList li{background:rgba(27,63,180,.55);border-radius:18px 18px 18px 6px;padding:14px 16px}
 #gbList li b{color:var(--yellow);font-weight:700}
@@ -254,59 +285,71 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 </style>
 </head>
 <body>
-<a class="skip" href="#" id="skipList">跳到影片列表</a>
+<a class="skip" href="#" id="skipList" data-i18n="skip">跳到影片列表</a>
 
 <header class="bar">
-  <a class="brand" href="#top" aria-label="N. B. Studio 回到頂端"><img src="__LOGO__" alt=""><span>N. B. Studio</span></a>
-  <nav aria-label="主要操作">
-    <button class="btn" type="button" id="openList">影片列表</button>
-    <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱頻道</a>
+  <a class="brand" href="#top" aria-label="N. B. Studio 回到頂端" data-i18n-aria="brandAria"><img src="__LOGO__" alt=""><span>N. B. Studio</span></a>
+  <div class="lang" id="lang">
+    <button class="lang-btn" type="button" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.8 3 2.8 16 0 19M12 2.5c-2.8 3-2.8 16 0 19"/></svg>
+      <span class="word">Language</span><span class="cur" id="langCur">繁中</span>
+      <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <ul class="lang-menu" id="langMenu" role="menu" aria-label="Language" hidden>
+      <li role="none"><button type="button" role="menuitemradio" data-lang="zh-Hant" lang="zh-Hant">繁體中文 <small>Traditional Chinese</small></button></li>
+      <li role="none"><button type="button" role="menuitemradio" data-lang="zh-Hans" lang="zh-Hans">简体中文 <small>Simplified Chinese</small></button></li>
+      <li role="none"><button type="button" role="menuitemradio" data-lang="en" lang="en">English <small>英文</small></button></li>
+    </ul>
+  </div>
+  <nav aria-label="主要操作" data-i18n-aria="navAria">
+    <button class="btn" type="button" id="openList" data-i18n="list">影片列表</button>
+    <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener" data-i18n="subscribe">訂閱頻道</a>
   </nav>
 </header>
 
 <main id="top">
-  <section class="hero" id="hero" aria-label="N. B. Studio 頻道首頁">
+  <section class="hero" id="hero" aria-label="N. B. Studio 頻道首頁" data-i18n-aria="heroAria">
     <canvas id="heroGL" aria-hidden="true"></canvas>
     <div class="hero-copy">
-      <h1>不廢話，<br>直接講重點。</h1>
-      <p>N. B. 是 No Bull Shit 的縮寫。這裡聊 AI 趨勢、飛行健康、三十六計、三國和唐詩，也記下生活裡的小驚喜。往下捲，__TOTAL__ 支影片沿著同一條航線看完。</p>
+      <h1 data-i18n-html="heroH1">不廢話，<br>直接講重點。</h1>
+      <p data-i18n="heroP">N. B. 是 No Bull Shit 的縮寫。這裡聊 AI 趨勢、飛行健康、三十六計、三國和唐詩，也記下生活裡的小驚喜。往下捲，__TOTAL__ 支影片沿著同一條航線看完。</p>
       <div class="acts">
-        <a class="btn solid" href="#journey" id="startBtn">開始看影片</a>
-        <a class="btn" href="https://www.youtube.com/@n.b.studio4666" target="_blank" rel="noopener">到 YouTube 頻道</a>
+        <a class="btn solid" href="#journey" id="startBtn" data-i18n="start">開始看影片</a>
+        <a class="btn" href="https://www.youtube.com/@n.b.studio4666" target="_blank" rel="noopener" data-i18n="toYT">到 YouTube 頻道</a>
       </div>
     </div>
-    <div class="hint" aria-hidden="true"><i></i>移動游標，攪動水面</div>
+    <div class="hint" aria-hidden="true"><i></i><span data-i18n="hint">移動游標，攪動水面</span></div>
   </section>
 
-  <section class="journey" id="journey" aria-label="依主題瀏覽影片">
+  <section class="journey" id="journey" aria-label="依主題瀏覽影片" data-i18n-aria="journeyAria">
     <div class="stage" id="stage">
       <canvas id="jGL" aria-hidden="true"></canvas>
       <div class="progress" id="prog"></div>
       <div id="labels"></div>
-      <nav class="rail" id="rail" aria-label="主題"></nav>
+      <nav class="rail" id="rail" aria-label="主題" data-i18n-aria="railAria"></nav>
     </div>
   </section>
 </main>
 
 <footer>
-  <img src="__LOGO__" alt="N. B. Studio 標誌">
+  <img src="__LOGO__" alt="N. B. Studio 標誌" data-i18n-alt="logoAlt">
   <div>
     <h2>No Bull Shit!</h2>
-    <p>每週持續更新 AI、知識與生活的短片。看到喜歡的主題，訂閱後就不會錯過下一支。也歡迎留言分享你的故事。</p>
+    <p data-i18n="footP">每週持續更新 AI、知識與生活的短片。看到喜歡的主題，訂閱後就不會錯過下一支。也歡迎留言分享你的故事。</p>
     <div class="links">
-      <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱 N. B. Studio</a>
+      <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener" data-i18n="footSub">訂閱 N. B. Studio</a>
       <a class="btn" href="https://www.facebook.com/andy.hsu.79677" target="_blank" rel="noopener">Facebook</a>
-      <button class="btn" type="button" id="openList2">瀏覽全部影片</button>
+      <button class="btn" type="button" id="openList2" data-i18n="browseAll">瀏覽全部影片</button>
     </div>
-    <small>© N. B. Studio。影片與縮圖皆來自 YouTube 頻道 @n.b.studio4666。</small>
+    <small data-i18n="footSmall">© N. B. Studio。影片與縮圖皆來自 YouTube 頻道 @n.b.studio4666。</small>
   </div>
 </footer>
 
-<button class="home3d" type="button" id="homeBtn" aria-label="回主頁（回到網站最上方）">
+<button class="home3d" type="button" id="homeBtn" aria-label="回主頁（回到網站最上方）" data-i18n-aria="homeAria">
   <span class="tilt">
     <span class="shadow" aria-hidden="true"></span>
     <span class="layers" aria-hidden="true"></span>
-    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b>回主頁</b></span>
+    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b data-i18n="home">回主頁</b></span>
   </span>
 </button>
 
@@ -316,59 +359,59 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
     <span id="gbLayers" aria-hidden="true"></span>
     <span class="face">
       <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8h28a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3H17l-8 7v-7H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill="#0A1850"/><circle cx="13" cy="18.5" r="2.3" fill="#FFD60A"/><circle cx="20" cy="18.5" r="2.3" fill="#FFD60A"/><circle cx="27" cy="18.5" r="2.3" fill="#FFD60A"/></svg>
-      <span><b>訪客留言</b><small>寫幾句話給 N. B.</small></span>
+      <span><b data-i18n="gb">訪客留言</b><small data-i18n="gbSmall">寫幾句話給 N. B.</small></span>
     </span>
     <span class="dot" aria-hidden="true"></span>
   </span>
 </button>
 
 <dialog id="guestbook" aria-labelledby="gbTitle">
-  <button class="btn x" type="button" id="gbClose">關閉</button>
+  <button class="btn x" type="button" id="gbClose" data-i18n="close">關閉</button>
   <form id="gbForm" novalidate>
-    <h2 id="gbTitle">留言給<br>N. B. Studio</h2>
-    <p class="lead">不用註冊。想看什麼主題、對哪支影片有想法，或只是打聲招呼都可以。</p>
-    <label for="gbName">暱稱</label>
+    <h2 id="gbTitle" data-i18n-html="gbTitle">留言給<br>N. B. Studio</h2>
+    <p class="lead" data-i18n="gbLead">不用註冊。想看什麼主題、對哪支影片有想法，或只是打聲招呼都可以。</p>
+    <label for="gbName" data-i18n="name">暱稱</label>
     <input id="gbName" name="name" maxlength="30" autocomplete="nickname" required>
     <span class="count" aria-hidden="true">&nbsp;</span>
-    <label for="gbMsg">留言</label>
+    <label for="gbMsg" data-i18n="message">留言</label>
     <textarea id="gbMsg" name="msg" maxlength="500" required></textarea>
     <span class="count" id="gbCount">0 / 500</span>
     <div class="hp" aria-hidden="true"><label>網站<input name="website" tabindex="-1" autocomplete="off"></label></div>
-    <div class="row"><button class="btn solid" type="submit" id="gbSend">送出留言</button></div>
+    <div class="row"><button class="btn solid" type="submit" id="gbSend" data-i18n="send">送出留言</button></div>
     <p class="status" id="gbStatus" role="status" aria-live="polite"></p>
   </form>
-  <section class="wall" aria-label="大家的留言">
-    <div class="gb-ownerbar" id="gbOwnerBar" hidden><img id="gbOwnerImg" alt=""><span><b>站長模式已開啟</b></span><button type="button" id="gbOwnerOff">結束站長模式</button></div>
-    <h3>大家的留言 <span id="gbTotal"></span></h3>
-    <ul id="gbList"><li class="empty">正在讀取留言…</li></ul>
+  <section class="wall" aria-label="大家的留言" data-i18n-aria="wall">
+    <div class="gb-ownerbar" id="gbOwnerBar" hidden><img id="gbOwnerImg" alt=""><span><b data-i18n="ownerOn">站長模式已開啟</b></span><button type="button" id="gbOwnerOff" data-i18n="ownerOff">結束站長模式</button></div>
+    <h3><span data-i18n="wall">大家的留言</span> <span id="gbTotal"></span></h3>
+    <ul id="gbList"><li class="empty" data-i18n="loading">正在讀取留言…</li></ul>
   </section>
 </dialog>
 
 <div class="tip" id="tip" role="presentation"></div>
 
-<dialog id="player" aria-label="播放影片">
+<dialog id="player" aria-label="播放影片" data-i18n-aria="playerAria">
   <div class="frame land" id="pframe"></div>
   <div class="meta">
     <h3 id="ptitle"></h3>
     <p id="pmeta"></p>
     <div>
-      <a class="btn solid" id="pyt" href="#" target="_blank" rel="noopener">在 YouTube 觀看</a>
-      <button class="btn" type="button" id="pclose">關閉</button>
+      <a class="btn solid" id="pyt" href="#" target="_blank" rel="noopener" data-i18n="watchYT">在 YouTube 觀看</a>
+      <button class="btn" type="button" id="pclose" data-i18n="close">關閉</button>
     </div>
   </div>
 </dialog>
 
-<dialog id="library" aria-label="全部影片列表">
-  <button class="btn solid close" type="button" id="lclose">關閉列表</button>
-<button class="home3d on" type="button" id="homeBtnLib" aria-label="回主頁（回到網站最上方）">
+<dialog id="library" aria-label="全部影片列表" data-i18n-aria="libAria">
+  <button class="btn solid close" type="button" id="lclose" data-i18n="lclose">關閉列表</button>
+<button class="home3d on" type="button" id="homeBtnLib" aria-label="回主頁（回到網站最上方）" data-i18n-aria="homeAria">
   <span class="tilt">
     <span class="shadow" aria-hidden="true"></span>
     <span class="layers" aria-hidden="true"></span>
-    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b>回主頁</b></span>
+    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b data-i18n="home">回主頁</b></span>
   </span>
 </button>
-  <h2>全部影片</h2>
-  <p>__TOTAL__ 支影片，依 11 個主題排列。點任一支直接播放。</p>
+  <h2 data-i18n="libH2">全部影片</h2>
+  <p data-i18n="libP">__TOTAL__ 支影片，依 11 個主題排列。點任一支直接播放。</p>
   <div id="lbody"></div>
 </dialog>
 
@@ -394,6 +437,122 @@ function glideTo(y){
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
   (function step(now){ const t=Math.min(1,(now-t0)/dur); scrollTo(0,from+dist*ease(t)); if(t<1) scrollAnim=requestAnimationFrame(step); else stop(); })(t0);
 }
+
+/* ---------- i18n ---------- */
+const LANGS={'zh-Hant':{short:'繁中',html:'zh-Hant',rtf:'zh-TW'},'zh-Hans':{short:'简中',html:'zh-Hans',rtf:'zh-CN'},en:{short:'EN',html:'en',rtf:'en'}};
+const STR={
+'zh-Hant':{
+ title:'N. B. Studio｜不廢話的 AI、古詩與冷知識',
+ metaDesc:'N. B. Studio（No Bull Shit!）：AI 趨勢、飛行健康、三十六計、漫話三國、唐詩與生活驚喜。{total} 支影片，一鏡看完。',
+ skip:'跳到影片列表', brandAria:'N. B. Studio 回到頂端', navAria:'主要操作', list:'影片列表', subscribe:'訂閱頻道',
+ heroAria:'N. B. Studio 頻道首頁', heroH1:'不廢話，<br>直接講重點。',
+ heroP:'N. B. 是 No Bull Shit 的縮寫。這裡聊 AI 趨勢、飛行健康、三十六計、三國和唐詩，也記下生活裡的小驚喜。往下捲，{total} 支影片沿著同一條航線看完。',
+ start:'開始看影片', toYT:'到 YouTube 頻道', hint:'移動游標，攪動水面', journeyAria:'依主題瀏覽影片', railAria:'主題',
+ logoAlt:'N. B. Studio 標誌', footP:'每週持續更新 AI、知識與生活的短片。看到喜歡的主題，訂閱後就不會錯過下一支。也歡迎留言分享你的故事。',
+ footSub:'訂閱 N. B. Studio', browseAll:'瀏覽全部影片', footSmall:'© N. B. Studio。影片與縮圖皆來自 YouTube 頻道 @n.b.studio4666。',
+ home:'回主頁', homeAria:'回主頁（回到網站最上方）', gb:'訪客留言', gbSmall:'寫幾句話給 N. B.', close:'關閉',
+ gbTitle:'留言給<br>N. B. Studio', gbLead:'不用註冊。想看什麼主題、對哪支影片有想法，或只是打聲招呼都可以。',
+ name:'暱稱', message:'留言', send:'送出留言', wall:'大家的留言', ownerOn:'站長模式已開啟', ownerOff:'結束站長模式', loading:'正在讀取留言…',
+ playerAria:'播放影片', watchYT:'在 YouTube 觀看', libAria:'全部影片列表', lclose:'關閉列表', libH2:'全部影片', libP:'{total} 支影片，依 11 個主題排列。點任一支直接播放。',
+ libCount:'（{n} 支）', video:'影片', shorts:'Shorts', untitled:'N. B. Studio 影片', sep:'｜',
+ views:'{n} 次觀看', views10k:'{n} 萬次觀看', tip:'{kind}，{views}，點擊播放',
+ intro:'穿過標誌，11 個主題、{total} 支影片排在同一條航線上。',
+ countBase:'{n} 支影片', countSome:'，其中 {sh} 支 Shorts', countAll:'，全是 Shorts', countTail:'。點卡片直接播放。',
+ outroH2:'不廢話，下一支見。', outroP:'新影片會先出現在 YouTube。訂閱 N. B. Studio，AI、飛行和古詩的新內容都不會錯過。',
+ ownerTag:'站長', ownerAs:'以 <b>N. B. Studio 站長</b> 身分回覆 {name}', ownerReplyLabel:'站長回覆內容', ownerPh:'寫下給 {name} 的回覆…',
+ ownerHint:'已有站長回覆，送出會取代原內容；清空後送出可刪除。', ownerUpdate:'更新站長回覆', ownerSend:'送出站長回覆', cancel:'取消',
+ replyLabel:'回覆 {name}', namePh:'你的暱稱', replyPh:'回覆 {name}…', sendReply:'送出回覆',
+ errOwnerEmpty:'請寫下回覆內容。', errReplyEmpty:'請填寫暱稱和回覆內容。', sending:'送出中…',
+ errReplyFail:'回覆沒有送出：{msg}', errReplyNet:'回覆沒有送出：網路連線中斷，請稍後再試。',
+ empty:'還沒有人留言。第一則留給你。', total:'{n} 則', totalReplies:'，{n} 則回覆',
+ btnOwnerEdit:'修改站長回覆', btnOwner:'站長回覆', btnReplyN:'回覆（{n}）', btnReply:'回覆', replyAria:'回覆 {name} 的留言',
+ notOpen:'留言板即將開放。', loadFail:'留言讀取失敗。請檢查網路連線後重新打開留言板。',
+ errEmpty:'請填寫暱稱和留言再送出。', errClosed:'留言板尚未開放，請稍後再來。', ok:'已送出留言，謝謝你！',
+ errFail:'留言沒有送出：{msg}', errNet:'留言沒有送出：網路連線中斷，請稍後再試。',
+ ownerExpired:'站長連結已失效，請在 Apps Script 重新執行 setupOwnerMode。', now:'剛剛',
+ 'cat.ai.desc':'AI 會說謊、會測謊，也會搶工作。從工程師的角度，講清楚它到底在做什麼。',
+},
+en:{
+ title:'N. B. Studio | No-nonsense AI, poetry and fun facts',
+ metaDesc:'N. B. Studio (No Bull Shit!): AI trends, flight health, the 36 Stratagems, the Three Kingdoms, Tang poetry and little surprises. {total} videos in one continuous flight.',
+ skip:'Skip to the video list', brandAria:'N. B. Studio, back to top', navAria:'Main actions', list:'Videos', subscribe:'Subscribe',
+ heroAria:'N. B. Studio channel home', heroH1:'No nonsense.<br>Straight to the point.',
+ heroP:'N. B. stands for No Bull Shit. The channel covers AI trends, flight health, the 36 Stratagems, the Three Kingdoms and Tang poetry, plus little surprises from everyday life. Scroll down to see all {total} videos along one flight path.',
+ start:'Start watching', toYT:'Visit the YouTube channel', hint:'Move your cursor to stir the water', journeyAria:'Browse videos by topic', railAria:'Topics',
+ logoAlt:'N. B. Studio logo', footP:'New short videos on AI, knowledge and life every week. Subscribe so you don\'t miss the next one, and feel free to leave a message with your own story.',
+ footSub:'Subscribe to N. B. Studio', browseAll:'Browse all videos', footSmall:'© N. B. Studio. Videos and thumbnails come from the YouTube channel @n.b.studio4666. Video titles are shown in their original language.',
+ home:'Home', homeAria:'Home (back to the top of the site)', gb:'Guestbook', gbSmall:'Say hi to N. B.', close:'Close',
+ gbTitle:'Leave a message for<br>N. B. Studio', gbLead:'No sign-up needed. Suggest a topic, share your thoughts on a video, or just say hi.',
+ name:'Name', message:'Message', send:'Send message', wall:'Messages', ownerOn:'Owner mode is on', ownerOff:'Exit owner mode', loading:'Loading messages…',
+ playerAria:'Play video', watchYT:'Watch on YouTube', libAria:'All videos', lclose:'Close list', libH2:'All videos', libP:'{total} videos in 11 topics. Click any of them to play.',
+ libCount:' ({n} videos)', video:'Video', shorts:'Short', untitled:'N. B. Studio video', sep:' | ',
+ views:'{n} views', views10k:'{n} views', tip:'{kind}, {views}. Click to play.',
+ intro:'Fly through the logo: 11 topics and {total} videos along one flight path.',
+ countBase:'{n} videos', countSome:', {sh} of them Shorts', countAll:', all Shorts', countTail:'. Click a card to play.',
+ outroH2:'No nonsense. See you in the next one.', outroP:'New videos show up on YouTube first. Subscribe to N. B. Studio so you don\'t miss new AI, flight and poetry videos.',
+ ownerTag:'Owner', ownerAs:'Replying as <b>N. B. Studio (owner)</b> to {name}', ownerReplyLabel:'Owner reply', ownerPh:'Write a reply to {name}…',
+ ownerHint:'There is already an owner reply. Sending replaces it; send an empty reply to delete it.', ownerUpdate:'Update owner reply', ownerSend:'Send owner reply', cancel:'Cancel',
+ replyLabel:'Reply to {name}', namePh:'Your name', replyPh:'Reply to {name}…', sendReply:'Send reply',
+ errOwnerEmpty:'Write a reply first.', errReplyEmpty:'Enter your name and a reply.', sending:'Sending…',
+ errReplyFail:'Reply not sent: {msg}', errReplyNet:'Reply not sent: the connection dropped. Try again in a moment.',
+ empty:'No messages yet. Be the first.', total:'{n} messages', totalOne:'1 message', totalReplies:', {n} replies', totalReplyOne:', 1 reply',
+ btnOwnerEdit:'Edit owner reply', btnOwner:'Owner reply', btnReplyN:'Reply ({n})', btnReply:'Reply', replyAria:'Reply to {name}',
+ notOpen:'The guestbook opens soon.', loadFail:'Couldn\'t load messages. Check your connection and open the guestbook again.',
+ errEmpty:'Enter your name and a message before sending.', errClosed:'The guestbook isn\'t open yet. Please come back later.', ok:'Message sent. Thank you!',
+ errFail:'Message not sent: {msg}', errNet:'Message not sent: the connection dropped. Try again in a moment.',
+ ownerExpired:'The owner link has expired. Run setupOwnerMode in Apps Script again.', now:'just now',
+ 'cat.ai.name':'AI Frontline', 'cat.ai.desc':'AI can lie, detect lies and take jobs. An engineer explains what it actually does.',
+ 'cat.fly.name':'Flight & Health', 'cat.fly.desc':'Ear pain, leg clots, why plane food tastes bland. What cabin crew and aviation doctors won\'t tell you.',
+ 'cat.cargo.name':'Air Cargo Diaries', 'cat.cargo.desc':'Overflowing warehouses, no cargo space, delayed flights. A day in the life of air cargo rookie A-Cheng, and how your parcel gets on a plane.',
+ 'cat.ji.name':'36 Stratagems', 'cat.ji.desc':'Two-thousand-year-old military tactics still play out in today\'s meeting rooms. One stratagem per video.',
+ 'cat.sg.name':'Three Kingdoms', 'cat.sg.desc':'Guandu, Red Cliffs, the Empty Fort. A whole battle told in three minutes of comics.',
+ 'cat.poem.name':'Tang Poetry', 'cat.poem.desc':'Li Bai, Du Fu, Wang Wei. One poem, one minute. Slow down and read.',
+ 'cat.quote.name':'Quotes', 'cat.quote.desc':'From Master Hongyi to Marie Curie. One line to think about.',
+ 'cat.family.name':'Couples & Family', 'cat.family.desc':'Who does the chores and how to say things. Everyday skirmishes between couples, and between fathers and sons.',
+ 'cat.life.name':'Little Surprises', 'cat.life.desc':'Spontaneous trips to Pinglin, a forest cabin near Portland, and a first try at pan-fried buns.',
+ 'cat.fusion.name':'AI Creatures', 'cat.fusion.desc':'Orca meets great white, hippo meets golden eagle. AI puts the impossible together.',
+ 'cat.world.name':'World & Mysteries', 'cat.world.desc':'World rankings, archaeological mysteries, alien signals. Curiosity that doesn\'t fit a category lives here.',
+}};
+const SRV_EN={'請填寫暱稱和留言。':'Enter your name and a message.','這個暱稱保留給站長使用，請換一個。':'That name is reserved for the channel owner. Please pick another.',
+ '要回覆的留言已不存在。':'The message you replied to no longer exists.','資料格式錯誤。':'Something went wrong with the request.','請選擇要回覆的留言。':'Choose a message to reply to.'};
+let LANG=localStorage.getItem('nbLang'); if(!LANGS[LANG]) LANG='zh-Hant';
+let toCN=null;
+const onLang=[];
+function loadOpenCC(){
+  if(toCN) return Promise.resolve();
+  return new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src='https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/t2cn.js';
+    sc.onload=()=>{ try{ toCN=OpenCC.Converter({from:'twp',to:'cn'}); }catch(e){ toCN=OpenCC.Converter({from:'tw',to:'cn'}); } res(); }; sc.onerror=rej; document.head.appendChild(sc); });
+}
+function loadSCFonts(){
+  if(document.getElementById('scFonts')) return;
+  const l=document.createElement('link'); l.id='scFonts'; l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap'; document.head.appendChild(l);
+}
+const zh=s=>(LANG==='zh-Hans'&&toCN)?toCN(s):s;          // 使用者內容（影片標題、留言）
+function t(key,vars){
+  let s=STR[LANG==='en'?'en':'zh-Hant'][key]; if(s==null) s=STR['zh-Hant'][key]; if(s==null) return key;
+  if(vars) s=s.replace(/\{(\w+)\}/g,(m,k)=>vars[k]!=null?vars[k]:'');
+  return LANG==='en'?s:zh(s);
+}
+function srvMsg(m){ if(!m) return m; if(LANG==='en') return SRV_EN[m]||(/金鑰/.test(m)?'Invalid owner key.':m); return zh(m); }
+function applyStatic(root=document){
+  const total=RAW.length;
+  root.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n,{total}); });
+  root.querySelectorAll('[data-i18n-html]').forEach(el=>{ el.innerHTML=t(el.dataset.i18nHtml,{total}); });
+  root.querySelectorAll('[data-i18n-aria]').forEach(el=>{ el.setAttribute('aria-label',t(el.dataset.i18nAria,{total})); });
+  root.querySelectorAll('[data-i18n-alt]').forEach(el=>{ el.alt=t(el.dataset.i18nAlt,{total}); });
+  document.title=t('title');
+  const md=document.querySelector('meta[name="description"]'); if(md) md.content=t('metaDesc',{total});
+}
+async function setLang(l){
+  if(!LANGS[l]) return;
+  if(l==='zh-Hans'){ loadSCFonts(); try{ await loadOpenCC(); }catch(e){ alert('简体中文转换载入失败，请检查网络后再试。'); return; } }
+  LANG=l; localStorage.setItem('nbLang',l);
+  document.documentElement.lang=LANGS[l].html;
+  applyStatic(); onLang.forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+}
+if(LANG==='zh-Hans'){ loadSCFonts(); try{ await loadOpenCC(); }catch(e){ LANG='zh-Hant'; } }
+document.documentElement.lang=LANGS[LANG].html;
 
 /* ---------- categories ---------- */
 const CATS = [
@@ -424,19 +583,25 @@ function classify([id,t,s,v,p]){
   if(has(6,16)||m(/說走就走|初體驗|咖啡|水煎包|鳥|觸動|行旅|吃|My First/)) return 'life';
   return 'world';
 }
-const VIDEOS = RAW.map(r=>({id:r[0], title:(r[1]||'').replace(/[\s\-–—:：]+$/,'')||'N. B. Studio 影片', short:!!r[2], views:r[3], cat:classify(r)}));
+const VIDEOS = RAW.map(r=>({id:r[0], title:(r[1]||'').replace(/[\s\-–—:：]+$/,''), short:!!r[2], views:r[3], cat:classify(r)}));
 CATS.forEach(c=>{ c.items=VIDEOS.filter(v=>v.cat===c.key); });
-const fmtViews=v=>v>=10000?`${(v/10000).toFixed(1).replace(/\.0$/,'')} 萬次觀看`:`${v.toLocaleString()} 次觀看`;
+const fmtViews=v=>LANG==='en'?t('views',{n:new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1}).format(v)})
+  :(v>=10000?t('views10k',{n:(v/10000).toFixed(1).replace(/\.0$/,'')}):t('views',{n:v.toLocaleString()}));
+const vTitle=v=>v.title?zh(v.title):t('untitled');
+const catName=c=>LANG==='en'?t(`cat.${c.key}.name`):zh(c.name);
+const catSub=c=>LANG==='en'?c.name:c.en;
+const catDesc=c=>LANG==='en'?t(`cat.${c.key}.desc`):zh(c.desc);
+const kindOf=v=>v.short?t('shorts'):t('video');
 const thumb=v=>v.short?`https://i.ytimg.com/vi/${v.id}/frame0.jpg`:`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`;
 
 /* ---------- player & library ---------- */
 const player=document.getElementById('player'), pframe=document.getElementById('pframe');
 function openVideo(v){
   pframe.className='frame '+(v.short?'port':'land');
-  pframe.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" title="${v.title.replace(/"/g,'&quot;')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-  document.getElementById('ptitle').textContent=v.title;
+  pframe.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" title="${vTitle(v).replace(/"/g,'&quot;')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  document.getElementById('ptitle').textContent=vTitle(v);
   const cat=CATS.find(c=>c.key===v.cat);
-  document.getElementById('pmeta').textContent=`${cat.name}｜${v.short?'Shorts':'影片'}｜${fmtViews(v.views)}`;
+  document.getElementById('pmeta').textContent=[catName(cat),kindOf(v),fmtViews(v.views)].join(t('sep'));
   document.getElementById('pyt').href=v.short?`https://www.youtube.com/shorts/${v.id}`:`https://www.youtube.com/watch?v=${v.id}`;
   player.showModal();
 }
@@ -449,18 +614,20 @@ function buildLibrary(target){
   const frag=document.createDocumentFragment();
   CATS.forEach(c=>{
     const sec=document.createElement('section');
-    sec.innerHTML=`<h3>${c.name}</h3><p>${c.desc}（${c.items.length} 支）</p><div class="lgrid"></div>`;
+    sec.innerHTML=`<h3></h3><p></p><div class="lgrid"></div>`;
+    sec.querySelector('h3').textContent=catName(c); sec.querySelector('p').textContent=catDesc(c)+t('libCount',{n:c.items.length});
     const g=sec.querySelector('.lgrid');
     c.items.forEach(v=>{
       const b=document.createElement('button'); b.type='button'; if(v.short) b.className='s';
       b.innerHTML=`<img loading="lazy" alt="" src="${v.short?`https://i.ytimg.com/vi/${v.id}/frame0.jpg`:`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}"><span></span>`;
-      b.querySelector('span').textContent=v.title;
+      b.querySelector('span').textContent=vTitle(v);
       b.onclick=()=>openVideo(v); g.appendChild(b);
     });
     frag.appendChild(sec);
   });
   target.appendChild(frag);
 }
+onLang.push(()=>{ if(libBuilt){ const lb=document.getElementById('lbody'); lb.innerHTML=''; buildLibrary(lb); } });
 function openLibrary(e){ e&&e.preventDefault(); if(!libBuilt){buildLibrary(document.getElementById('lbody'));libBuilt=true;} library.showModal(); }
 document.getElementById('openList').onclick=openLibrary;
 document.getElementById('openList2').onclick=openLibrary;
@@ -484,20 +651,22 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
   const status=document.getElementById('gbStatus'), send=document.getElementById('gbSend'), msg=document.getElementById('gbMsg');
   const total=document.getElementById('gbTotal'), countEl=document.getElementById('gbCount'), nameEl=document.getElementById('gbName');
   const configured=/^https:\/\/script\.google\.com\//.test(GUESTBOOK_URL);
-  const rtf=new Intl.RelativeTimeFormat('zh-TW',{numeric:'auto'});
+  let rtf=new Intl.RelativeTimeFormat(LANGS[LANG].rtf,{numeric:'auto'});
   function ago(iso){ const s=(new Date(iso)-Date.now())/1000, a=Math.abs(s);
-    if(a<60) return '剛剛'; if(a<3600) return rtf.format(Math.round(s/60),'minute'); if(a<86400) return rtf.format(Math.round(s/3600),'hour');
+    if(a<60) return t('now'); if(a<3600) return rtf.format(Math.round(s/60),'minute'); if(a<86400) return rtf.format(Math.round(s/3600),'hour');
     if(a<86400*30) return rtf.format(Math.round(s/86400),'day'); return new Date(iso).toLocaleDateString('zh-TW'); }
+  let lastItems=null;
+  onLang.push(()=>{ rtf=new Intl.RelativeTimeFormat(LANGS[LANG].rtf,{numeric:'auto'}); status.textContent=''; if(lastItems) render(lastItems); });
   const savedName=localStorage.getItem('nbGbName')||''; if(savedName) nameEl.value=savedName;
   function entry(it,cls){
     const d=document.createElement('div'); d.className=cls; d.innerHTML='<b></b><time></time><p></p>';
-    d.querySelector('b').textContent=it.name; const t=d.querySelector('time'); t.dateTime=it.t; t.textContent=ago(it.t);
-    d.querySelector('p').textContent=it.msg; return d;
+    d.querySelector('b').textContent=zh(it.name); const tm=d.querySelector('time'); tm.dateTime=it.t; tm.textContent=ago(it.t);
+    d.querySelector('p').textContent=zh(it.msg); return d;
   }
   function ownerBox(text){
     const d=document.createElement('div'); d.className='gb-owner';
-    d.innerHTML=`<img src="${LOGO}" alt=""><div><b>N. B. Studio<span>站長</span></b><p></p></div>`;
-    d.querySelector('p').textContent=text; return d;
+    d.innerHTML=`<img src="${LOGO}" alt=""><div><b>N. B. Studio<span>${t('ownerTag')}</span></b><p></p></div>`;
+    d.querySelector('p').textContent=zh(text); return d;
   }
   /* 站長模式：Email 連結 #owner=金鑰 → 存在這台裝置，向後端驗證後才啟用 */
   const ownerBar=document.getElementById('gbOwnerBar');
@@ -509,7 +678,7 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
     if(ownerChecked||!ownerKey||!configured) return;
     ownerChecked=true;
     try{ await post({ownerKey,verify:true}); isOwner=true; }
-    catch(err){ isOwner=false; if(/金鑰/.test(err.message)){ localStorage.removeItem('nbOwnerKey'); ownerKey=''; status.className='status err'; status.textContent='站長連結已失效，請在 Apps Script 重新執行 setupOwnerMode。'; } else ownerChecked=false; }
+    catch(err){ isOwner=false; if(/金鑰/.test(err.message)){ localStorage.removeItem('nbOwnerKey'); ownerKey=''; status.className='status err'; status.textContent=t('ownerExpired'); } else ownerChecked=false; }
     ownerBar.hidden=!isOwner;
   }
   document.getElementById('gbOwnerOff').onclick=()=>{ localStorage.removeItem('nbOwnerKey'); ownerKey=''; isOwner=false; ownerBar.hidden=true; load(); };
@@ -519,16 +688,16 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
     list.querySelectorAll('.gb-rform').forEach(f=>f.remove());
     const f=document.createElement('form'); f.className='gb-rform'+(isOwner?' as-owner':''); f.noValidate=true;
     f.innerHTML=isOwner
-      ? `<div class="gb-as"><img src="${LOGO}" alt=""><span>以 <b>N. B. Studio 站長</b> 身分回覆 ${esc(it.name)}</span></div>
-         <label class="sr" for="r-${it.id}">站長回覆內容</label>
-         <textarea id="r-${it.id}" name="msg" maxlength="500" placeholder="寫下給 ${esc(it.name)} 的回覆…"></textarea>
-         ${it.owner?'<small class="gb-hint">已有站長回覆，送出會取代原內容；清空後送出可刪除。</small>':''}
-         <div class="row"><button class="btn solid" type="submit">${it.owner?'更新站長回覆':'送出站長回覆'}</button><button class="btn" type="button" data-cancel>取消</button></div>
+      ? `<div class="gb-as"><img src="${LOGO}" alt=""><span>${t('ownerAs',{name:esc(zh(it.name))})}</span></div>
+         <label class="sr" for="r-${it.id}">${t('ownerReplyLabel')}</label>
+         <textarea id="r-${it.id}" name="msg" maxlength="500" placeholder="${t('ownerPh',{name:esc(zh(it.name))})}"></textarea>
+         ${it.owner?`<small class="gb-hint">${t('ownerHint')}</small>`:''}
+         <div class="row"><button class="btn solid" type="submit">${it.owner?t('ownerUpdate'):t('ownerSend')}</button><button class="btn" type="button" data-cancel>${t('cancel')}</button></div>
          <p class="status" role="status" aria-live="polite"></p>`
-      : `<label class="sr" for="r-${it.id}">回覆 ${esc(it.name)}</label>
-         <input name="name" maxlength="30" placeholder="你的暱稱" autocomplete="nickname">
-         <textarea id="r-${it.id}" name="msg" maxlength="500" placeholder="回覆 ${esc(it.name)}…"></textarea>
-         <div class="row"><button class="btn solid" type="submit">送出回覆</button><button class="btn" type="button" data-cancel>取消</button></div>
+      : `<label class="sr" for="r-${it.id}">${t('replyLabel',{name:esc(zh(it.name))})}</label>
+         <input name="name" maxlength="30" placeholder="${t('namePh')}" autocomplete="nickname">
+         <textarea id="r-${it.id}" name="msg" maxlength="500" placeholder="${t('replyPh',{name:esc(zh(it.name))})}"></textarea>
+         <div class="row"><button class="btn solid" type="submit">${t('sendReply')}</button><button class="btn" type="button" data-cancel>${t('cancel')}</button></div>
          <p class="status" role="status" aria-live="polite"></p>`;
     const n=f.querySelector('input'), m=f.querySelector('textarea'), st=f.querySelector('.status'), sb=f.querySelector('[type=submit]'), label=sb.textContent;
     if(n) n.value=nameEl.value.trim()||localStorage.getItem('nbGbName')||'';
@@ -538,25 +707,26 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
       e.preventDefault(); st.className='status';
       const text=m.value.trim();
       if(isOwner){
-        if(!text&&!it.owner){ st.classList.add('err'); st.textContent='請寫下回覆內容。'; m.focus(); return; }
+        if(!text&&!it.owner){ st.classList.add('err'); st.textContent=t('errOwnerEmpty'); m.focus(); return; }
       }else{
         const name=n.value.trim();
-        if(!name||!text){ st.classList.add('err'); st.textContent='請填寫暱稱和回覆內容。'; (name?m:n).focus(); return; }
+        if(!name||!text){ st.classList.add('err'); st.textContent=t('errReplyEmpty'); (name?m:n).focus(); return; }
       }
-      sb.disabled=true; sb.textContent='送出中…';
+      sb.disabled=true; sb.textContent=t('sending');
       try{
         if(isOwner) await post({ownerKey,parent:it.id,msg:text});
         else{ const name=n.value.trim(); await post({name,msg:text,parent:it.id}); localStorage.setItem('nbGbName',name); if(!nameEl.value) nameEl.value=name; }
         load();
-      }catch(err){ st.classList.add('err'); st.textContent=err.message?`回覆沒有送出：${err.message}`:'回覆沒有送出：網路連線中斷，請稍後再試。'; sb.disabled=false; sb.textContent=label; }
+      }catch(err){ st.classList.add('err'); st.textContent=err.message?t('errReplyFail',{msg:srvMsg(err.message)}):t('errReplyNet'); sb.disabled=false; sb.textContent=label; }
     });
     li.appendChild(f); (n&&!n.value?n:m).focus();
   }
   function render(items){
     list.innerHTML='';
-    if(!items.length){ list.innerHTML='<li class="empty">還沒有人留言。第一則留給你。</li>'; total.textContent=''; return; }
+    lastItems=items;
+    if(!items.length){ list.innerHTML=`<li class="empty">${t('empty')}</li>`; total.textContent=''; return; }
     const nReplies=items.reduce((a,it)=>a+(it.replies?it.replies.length:0),0);
-    total.textContent=`${items.length} 則${nReplies?`，${nReplies} 則回覆`:''}`;
+    total.textContent=(LANG==='en'&&items.length===1?t('totalOne'):t('total',{n:items.length}))+(nReplies?(LANG==='en'&&nReplies===1?t('totalReplyOne'):t('totalReplies',{n:nReplies})):'');
     for(const it of items){
       const li=document.createElement('li'); li.appendChild(entry(it,'gb-msg'));
       if(it.owner) li.appendChild(ownerBox(it.owner));
@@ -567,9 +737,9 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
       }
       if(it.id){
         const rb=document.createElement('button'); rb.type='button'; rb.className='gb-rbtn';
-        rb.textContent=isOwner?(it.owner?'修改站長回覆':'站長回覆'):(it.replies&&it.replies.length?`回覆（${it.replies.length}）`:'回覆');
+        rb.textContent=isOwner?(it.owner?t('btnOwnerEdit'):t('btnOwner')):(it.replies&&it.replies.length?t('btnReplyN',{n:it.replies.length}):t('btnReply'));
         if(isOwner) rb.classList.add('owner');
-        rb.setAttribute('aria-label',`回覆 ${it.name} 的留言`); rb.onclick=()=>replyForm(li,it); li.appendChild(rb);
+        rb.setAttribute('aria-label',t('replyAria',{name:zh(it.name)})); rb.onclick=()=>replyForm(li,it); li.appendChild(rb);
       }
       list.appendChild(li);
     }
@@ -579,9 +749,9 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
     const j=await r.json(); if(!j.ok) throw new Error(j.error||''); return j;
   }
   async function load(){
-    if(!configured){ list.innerHTML='<li class="empty">留言板即將開放。</li>'; return; }
+    if(!configured){ list.innerHTML=`<li class="empty">${t('notOpen')}</li>`; return; }
     try{ await checkOwner(); const r=await fetch(GUESTBOOK_URL,{cache:'no-store'}); const j=await r.json(); render(j.list||[]); }
-    catch(e){ list.innerHTML='<li class="empty">留言讀取失敗。請檢查網路連線後重新打開留言板。</li>'; }
+    catch(e){ list.innerHTML=`<li class="empty">${t('loadFail')}</li>`; }
   }
   btn.addEventListener('click',()=>{ dlg.showModal(); load(); setTimeout(()=>nameEl.focus(),50); });
   if(hashKey) setTimeout(()=>{ dlg.showModal(); load(); },600);
@@ -597,17 +767,17 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
     e.preventDefault();
     const fd=new FormData(form), name=String(fd.get('name')).trim(), text=String(fd.get('msg')).trim();
     status.className='status';
-    if(!name||!text){ status.classList.add('err'); status.textContent='請填寫暱稱和留言再送出。'; (name?msg:nameEl).focus(); return; }
-    if(!configured){ status.classList.add('err'); status.textContent='留言板尚未開放，請稍後再來。'; return; }
-    send.disabled=true; send.textContent='送出中…'; status.textContent='';
+    if(!name||!text){ status.classList.add('err'); status.textContent=t('errEmpty'); (name?msg:nameEl).focus(); return; }
+    if(!configured){ status.classList.add('err'); status.textContent=t('errClosed'); return; }
+    send.disabled=true; send.textContent=t('sending'); status.textContent='';
     try{
       await post({name,msg:text,website:fd.get('website')||''});
       localStorage.setItem('nbGbName',name);
-      status.classList.add('ok'); status.textContent='已送出留言，謝謝你！';
+      status.classList.add('ok'); status.textContent=t('ok');
       msg.value=''; countEl.textContent='0 / 500'; load();
     }catch(err){
-      status.classList.add('err'); status.textContent=err.message?`留言沒有送出：${err.message}`:'留言沒有送出：網路連線中斷，請稍後再試。';
-    }finally{ send.disabled=false; send.textContent='送出留言'; }
+      status.classList.add('err'); status.textContent=err.message?t('errFail',{msg:srvMsg(err.message)}):t('errNet');
+    }finally{ send.disabled=false; send.textContent=t('send'); }
   });
 })();
 
@@ -634,6 +804,27 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
     },{passive:true});
   }
 })();
+
+/* ---------- language menu ---------- */
+(function langMenu(){
+  const btn=document.getElementById('langBtn'), menu=document.getElementById('langMenu'), cur=document.getElementById('langCur');
+  const items=[...menu.querySelectorAll('[data-lang]')];
+  const sync=()=>{ cur.textContent=LANGS[LANG].short; items.forEach(b=>b.setAttribute('aria-checked',b.dataset.lang===LANG?'true':'false')); };
+  const open=()=>{ menu.hidden=false; btn.setAttribute('aria-expanded','true'); (items.find(b=>b.dataset.lang===LANG)||items[0]).focus(); };
+  const close=(focus)=>{ menu.hidden=true; btn.setAttribute('aria-expanded','false'); if(focus) btn.focus(); };
+  btn.addEventListener('click',()=>menu.hidden?open():close());
+  items.forEach((b,i)=>{
+    b.addEventListener('click',async()=>{ close(true); if(b.dataset.lang!==LANG){ cur.textContent='…'; await setLang(b.dataset.lang); } sync(); });
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowDown'){ e.preventDefault(); items[(i+1)%items.length].focus(); }
+      if(e.key==='ArrowUp'){ e.preventDefault(); items[(i+items.length-1)%items.length].focus(); }
+    });
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!menu.hidden) close(true); });
+  document.addEventListener('click',e=>{ if(!menu.hidden&&!e.target.closest('#lang')) close(); });
+  sync();
+})();
+applyStatic();
 
 /* ---------- shared ---------- */
 const logoImg=new Image(); logoImg.src=LOGO;
@@ -900,13 +1091,26 @@ function initJourney(){
   /* DOM: labels + rail */
   const labelsEl=document.getElementById('labels'), rail=document.getElementById('rail'), prog=document.getElementById('prog');
   const mkLabel=(cls,html)=>{ const d=document.createElement('div'); d.className='label '+cls; d.innerHTML=html; labelsEl.appendChild(d); return d; };
-  const introL=mkLabel('intro','<p>穿過標誌，11 個主題、__TOTAL__ 支影片排在同一條航線上。</p>');
+  const introL=mkLabel('intro','');
   CATS.forEach((c,i)=>{
-    const sh=c.items.filter(v=>v.short).length;
-    c.label=mkLabel(c.vertical?'vertical':c.long?'long':'',`<h2>${c.name}<small>${c.en}</small></h2><div><p>${c.desc}</p><span class="count">${c.items.length} 支影片${sh&&sh<c.items.length?`，其中 ${sh} 支 Shorts`:sh?'，全是 Shorts':''}。點卡片直接播放。</span></div>`);
-    const b=document.createElement('button'); b.type='button'; b.textContent=c.name; b.onclick=()=>goTo(2+2*i+.5); rail.appendChild(b); c.btn=b;
+    c.label=mkLabel('','');
+    const b=document.createElement('button'); b.type='button'; b.onclick=()=>goTo(2+2*i+.5); rail.appendChild(b); c.btn=b;
   });
-  const outroL=mkLabel('outro','<h2>不廢話，下一支見。</h2><p>新影片會先出現在 YouTube。訂閱 N. B. Studio，AI、飛行和古詩的新內容都不會錯過。</p><a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱頻道</a>');
+  const outroL=mkLabel('outro','');
+  function fillLabels(){
+    introL.innerHTML=`<p>${t('intro',{total:RAW.length})}</p>`;
+    CATS.forEach(c=>{
+      const n=c.items.length, sh=c.items.filter(v=>v.short).length;
+      c.label.classList.toggle('vertical',!!c.vertical&&LANG!=='en'); c.label.classList.toggle('long',!!c.long&&LANG!=='en');
+      c.label.innerHTML=`<h2></h2><div><p></p><span class="count"></span></div>`;
+      const h=c.label.querySelector('h2'); h.textContent=catName(c); const sm=document.createElement('small'); sm.textContent=catSub(c); h.appendChild(sm);
+      c.label.querySelector('p').textContent=catDesc(c);
+      c.label.querySelector('.count').textContent=t('countBase',{n})+(sh&&sh<n?t('countSome',{sh}):sh?t('countAll'):'')+t('countTail');
+      c.btn.textContent=catName(c);
+    });
+    outroL.innerHTML=`<h2>${t('outroH2')}</h2><p>${t('outroP')}</p><a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">${t('subscribe')}</a>`;
+  }
+  fillLabels(); onLang.push(fillLabels);
 
   const vh=()=>stage.clientHeight||innerHeight;
   function layout(){ sec.style.height=`${(N-1)*62+100}vh`; }
@@ -1003,7 +1207,7 @@ function initJourney(){
     }
     if(hovered&&pointer){
       const v=hovered.userData.v;
-      tip.innerHTML=`<b></b><span>${v.short?'Shorts':'影片'}，${fmtViews(v.views)}，點擊播放</span>`; tip.querySelector('b').textContent=v.title;
+      tip.innerHTML=`<b></b><span>${t('tip',{kind:kindOf(v),views:fmtViews(v.views)})}</span>`; tip.querySelector('b').textContent=vTitle(v);
       tip.style.left=pointer.x+'px'; tip.style.top=pointer.y+'px'; tip.classList.add('on'); stage.style.cursor='pointer';
     }else{ tip.classList.remove('on'); stage.style.cursor=''; }
     renderer.render(scene,camera);
