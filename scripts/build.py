@@ -19,7 +19,9 @@ def build():
     data = "const RAW=" + json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + ";"
     logo = "data:image/jpeg;base64," + base64.b64encode((ROOT / "assets" / "logo.jpg").read_bytes()).decode()
     total = str(len(rows))
-    out = src.replace("__DATA__", data).replace("__LOGO__", logo).replace("__TOTAL__", total)
+    gb = ROOT / "guestbook" / "url.txt"
+    gb_url = gb.read_text(encoding="utf-8").strip() if gb.exists() else ""
+    out = src.replace("__DATA__", data).replace("__LOGO__", logo).replace("__TOTAL__", total).replace("__GUESTBOOK_URL__", gb_url)
     (ROOT / "index.html").write_text(out, encoding="utf-8")
     print(f"index.html 已產生：{len(rows)} 支影片，{len(out):,} bytes")
 
