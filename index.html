@@ -532,6 +532,11 @@ const GUESTBOOK_URL = 'https://script.google.com/macros/s/AKfycbxAcNNjQ3j7fzPLEx
   }
   btn.addEventListener('click',()=>{ dlg.showModal(); load(); setTimeout(()=>nameEl.focus(),50); });
   if(hashKey) setTimeout(()=>{ dlg.showModal(); load(); },600);
+  addEventListener('hashchange',()=>{
+    const k=(location.hash.match(/^#owner=([A-Za-z0-9]+)$/)||[])[1]; if(!k) return;
+    ownerKey=k; localStorage.setItem('nbOwnerKey',k); history.replaceState(null,'',location.pathname+location.search);
+    ownerChecked=false; isOwner=false; if(!dlg.open) dlg.showModal(); load();
+  });
   document.getElementById('gbClose').onclick=()=>dlg.close();
   dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
   msg.addEventListener('input',()=>{ countEl.textContent=`${msg.value.length} / 500`; });
