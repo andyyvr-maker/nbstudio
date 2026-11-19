@@ -130,6 +130,30 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 .nogl .journey{height:auto!important}
 .nogl .stage{display:none}
 
+/* 3D home button */
+.home3d{position:fixed;top:14px;left:50%;z-index:36;border:0;padding:0;background:none;cursor:pointer;perspective:600px;font:inherit;-webkit-tap-highlight-color:transparent;
+  --rx:18deg;--ry:0deg;--lift:0px;transform:translate(-50%,-24px);opacity:0;visibility:hidden;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1),visibility .3s}
+.home3d.on{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.home3d .tilt{position:relative;display:block;width:172px;height:58px;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--lift));transition:transform .18s ease-out}
+.home3d .layers{position:absolute;inset:0;transform-style:preserve-3d}
+.home3d .layer,.home3d .face{position:absolute;inset:0;border-radius:999px}
+.home3d .layer{background:#C99400;border:3px solid var(--navy)}
+.home3d .face{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(170deg,#FFE45C 0%,var(--yellow) 50%,var(--yolk) 100%);border:3px solid var(--navy);color:var(--navy);transform:translateZ(1px);box-shadow:inset 0 3px 0 rgba(255,255,255,.55)}
+.home3d .face svg{width:26px;height:26px;flex:none}
+.home3d .face b{font-family:var(--serif);font-weight:900;font-size:1.3rem;letter-spacing:.08em;line-height:1}
+.home3d .shadow{position:absolute;left:10%;right:10%;bottom:-20px;height:14px;border-radius:50%;background:rgba(4,10,40,.5);filter:blur(7px);transform:translateZ(-30px)}
+.home3d:hover{--lift:12px}
+.home3d:active{--lift:-8px}
+.home3d:focus-visible{outline:none}
+.home3d:focus-visible .face{box-shadow:0 0 0 4px var(--paper),0 0 0 7px var(--navy)}
+@media (max-width:760px){
+  .home3d{top:auto;bottom:14px;left:14px;--rx:10deg;--ry:14deg;transform:translateY(24px)}
+  .home3d.on{transform:none}
+  .home3d .tilt{width:118px;height:66px}
+  .home3d .face{gap:6px}
+  .home3d .face svg{width:22px;height:22px}
+  .home3d .face b{font-size:1.1rem;letter-spacing:.04em}
+}
 /* 3D guestbook button */
 .gb3d{position:fixed;right:var(--pad);bottom:clamp(22px,4vh,40px);z-index:35;border:0;padding:0;background:none;cursor:pointer;perspective:700px;-webkit-tap-highlight-color:transparent;font:inherit;--rx:12deg;--ry:-18deg;--lift:0px}
 .gb3d .tilt{position:relative;display:block;width:212px;height:84px;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--lift));transition:transform .18s ease-out}
@@ -216,10 +240,10 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
   .bar nav .btn:not(.solid){display:none}
   .brand span{display:none}
   .hint{display:none}
-  .hero-copy{right:var(--pad);bottom:28px}
+  .hero-copy{right:var(--pad);bottom:96px}
   .hero p{font-size:.98rem;margin-bottom:1.2em}
   .rail{display:none}
-  .label{right:var(--pad);bottom:30px}
+  .label{right:var(--pad);bottom:96px}
   .label p{font-size:.96rem}
   .label.vertical{display:block}
   .label.long h2{font-size:clamp(2.2rem,4.6vw,4.4rem)}
@@ -278,6 +302,14 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
   </div>
 </footer>
 
+<button class="home3d" type="button" id="homeBtn" aria-label="回主頁（回到網站最上方）">
+  <span class="tilt">
+    <span class="shadow" aria-hidden="true"></span>
+    <span class="layers" aria-hidden="true"></span>
+    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b>回主頁</b></span>
+  </span>
+</button>
+
 <button class="gb3d" type="button" id="gbBtn" aria-haspopup="dialog">
   <span class="tilt" id="gbTilt">
     <span class="shadow" aria-hidden="true"></span>
@@ -328,6 +360,13 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 
 <dialog id="library" aria-label="全部影片列表">
   <button class="btn solid close" type="button" id="lclose">關閉列表</button>
+<button class="home3d on" type="button" id="homeBtnLib" aria-label="回主頁（回到網站最上方）">
+  <span class="tilt">
+    <span class="shadow" aria-hidden="true"></span>
+    <span class="layers" aria-hidden="true"></span>
+    <span class="face"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 11h2.8v9.5h5.2v-6h3v6h5.2V11h2.8z" fill="#0A1850"/></svg><b>回主頁</b></span>
+  </span>
+</button>
   <h2>全部影片</h2>
   <p>__TOTAL__ 支影片，依 11 個主題排列。點任一支直接播放。</p>
   <div id="lbody"></div>
@@ -341,6 +380,20 @@ import * as THREE from 'three';
 
 const LOGO = '__LOGO__';
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* 自訂平滑捲動：不依賴瀏覽器的 smooth，各瀏覽器行為一致；使用者一滾輪/觸控就中止 */
+let scrollAnim=0;
+function glideTo(y){
+  cancelAnimationFrame(scrollAnim);
+  const max=document.documentElement.scrollHeight-innerHeight; y=Math.max(0,Math.min(max,y));
+  const from=scrollY, dist=y-from;
+  if(reduce||Math.abs(dist)<2){ scrollTo(0,y); return; }
+  const dur=Math.min(1600,450+Math.abs(dist)/12), t0=performance.now();
+  const stop=()=>{ cancelAnimationFrame(scrollAnim); removeEventListener('wheel',stop); removeEventListener('touchstart',stop); };
+  addEventListener('wheel',stop,{passive:true,once:true}); addEventListener('touchstart',stop,{passive:true,once:true});
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  (function step(now){ const t=Math.min(1,(now-t0)/dur); scrollTo(0,from+dist*ease(t)); if(t<1) scrollAnim=requestAnimationFrame(step); else stop(); })(t0);
+}
 
 /* ---------- categories ---------- */
 const CATS = [
@@ -556,6 +609,30 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
       status.classList.add('err'); status.textContent=err.message?`留言沒有送出：${err.message}`:'留言沒有送出：網路連線中斷，請稍後再試。';
     }finally{ send.disabled=false; send.textContent='送出留言'; }
   });
+})();
+
+/* ---------- 3D home button ---------- */
+(function home(){
+  const main=document.getElementById('homeBtn'), inLib=document.getElementById('homeBtnLib'), hero=document.getElementById('hero');
+  for(const b of [main,inLib]){
+    const box=b.querySelector('.layers');
+    for(let i=12;i>=1;i--){ const l=document.createElement('span'); l.className='layer'; l.style.transform=`translateZ(${-i*1.5}px)`; l.style.filter=`brightness(${1-i*.028})`; box.appendChild(l); }
+  }
+  const goHome=()=>glideTo(0);
+  main.addEventListener('click',()=>{ goHome(); main.blur(); });
+  inLib.addEventListener('click',()=>{ library.close(); goHome(); });
+  const update=()=>{ const on=scrollY>hero.offsetHeight*.5; main.classList.toggle('on',on); main.tabIndex=on?0:-1; main.setAttribute('aria-hidden',on?'false':'true'); };
+  addEventListener('scroll',update,{passive:true}); addEventListener('resize',update); update();
+  if(!reduce){
+    const mobile=matchMedia('(max-width:760px)');
+    addEventListener('pointermove',e=>{
+      for(const b of [main,inLib]){
+        const r=b.getBoundingClientRect(); if(!r.width) continue;
+        const dx=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/(innerWidth*.5))), dy=Math.max(-1,Math.min(1,(e.clientY-(r.top+r.height/2))/(innerHeight*.5)));
+        b.style.setProperty('--ry',`${(mobile.matches?14:0)+dx*24}deg`); b.style.setProperty('--rx',`${(mobile.matches?10:18)-dy*14}deg`);
+      }
+    },{passive:true});
+  }
 })();
 
 /* ---------- shared ---------- */
@@ -834,7 +911,7 @@ function initJourney(){
   const vh=()=>stage.clientHeight||innerHeight;
   function layout(){ sec.style.height=`${(N-1)*62+100}vh`; }
   layout();
-  function goTo(k){ const top=sec.offsetTop, span=sec.offsetHeight-vh(); scrollTo({top:top+span*k/(N-1),behavior:reduce?'auto':'smooth'}); }
+  function goTo(k){ const top=sec.offsetTop, span=sec.offsetHeight-vh(); glideTo(top+span*k/(N-1)); }
   const progress=()=>{ const r=sec.getBoundingClientRect(), span=r.height-vh(); return Math.min(1,Math.max(0,-r.top/span)); };
 
   /* picking */
@@ -944,7 +1021,7 @@ if(!glOK){
   try{ loops.push(initJourney()); }catch(e){ console.error(e); }
   (function raf(){ loops.forEach(f=>f()); requestAnimationFrame(raf); })();
 }
-document.getElementById('startBtn').addEventListener('click',e=>{ e.preventDefault(); const s=document.getElementById('journey'); scrollTo({top:s.offsetTop+innerHeight*.9,behavior:reduce?'auto':'smooth'}); });
+document.getElementById('startBtn').addEventListener('click',e=>{ e.preventDefault(); const s=document.getElementById('journey'); glideTo(s.offsetTop+innerHeight*.9); });
 </script>
 </body>
 </html>
