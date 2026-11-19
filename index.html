@@ -161,13 +161,32 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
 #guestbook .status{min-height:1.6em;margin:12px 0 0;font-size:.92rem}
 #guestbook .status.ok{color:var(--yellow)}
 #guestbook .status.err{color:#FF9EA1}
-#guestbook .wall h3{font-family:var(--serif);font-weight:900;font-size:1.25rem;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline}
+#guestbook .wall h3{padding-right:88px;font-family:var(--serif);font-weight:900;font-size:1.25rem;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline}
 #guestbook .wall h3 span{font-family:var(--sans);font-weight:400;font-size:.85rem;color:var(--sky)}
 #gbList{list-style:none;margin:0;padding:0 6px 0 0;display:grid;gap:12px;max-height:min(56vh,520px);overflow:auto}
 #gbList li{background:rgba(27,63,180,.55);border-radius:18px 18px 18px 6px;padding:14px 16px}
 #gbList li b{color:var(--yellow);font-weight:700}
 #gbList li time{float:right;font-size:.8rem;color:var(--sky)}
 #gbList li p{margin:6px 0 0;white-space:pre-wrap;word-break:break-word;line-height:1.65}
+#gbList .gb-reply time{float:right;font-size:.8rem;color:var(--sky)}
+.gb-replies{margin:12px 0 0 14px;padding-left:14px;border-left:2px solid rgba(255,214,10,.45);display:grid;gap:10px}
+.gb-reply b{color:var(--paper);font-weight:700}
+.gb-reply p{margin:4px 0 0;white-space:pre-wrap;word-break:break-word;line-height:1.6;font-size:.95rem}
+.gb-owner{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;background:var(--yellow);color:var(--navy);border-radius:16px 16px 16px 6px;padding:10px 14px}
+.gb-owner img{width:32px;height:32px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--navy)}
+.gb-owner b{color:var(--navy)!important;font-weight:900;display:flex;align-items:center;gap:6px}
+.gb-owner b span{font-size:.72rem;font-weight:700;background:var(--navy);color:var(--yellow);border-radius:999px;padding:1px 8px}
+.gb-owner p{margin:3px 0 0!important;white-space:pre-wrap;word-break:break-word;line-height:1.6;font-size:.95rem}
+.gb-rbtn{all:unset;cursor:pointer;margin-top:10px;font-size:.85rem;font-weight:700;color:var(--yellow);padding:4px 2px;border-radius:6px}
+.gb-rbtn:hover{text-decoration:underline}
+.gb-rbtn:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+.gb-rform{margin-top:10px;display:grid;gap:8px}
+.gb-rform input,.gb-rform textarea{width:100%;font:inherit;color:var(--navy);background:var(--paper);border:2px solid transparent;border-radius:12px;padding:9px 12px;margin:0}
+.gb-rform textarea{min-height:80px;resize:vertical}
+.gb-rform input:focus,.gb-rform textarea:focus{outline:none;border-color:var(--yellow)}
+.gb-rform .btn{padding:9px 16px;font-size:.88rem}
+.gb-rform .status{margin:0;min-height:0;font-size:.88rem}
+.gb-rform .status.err{color:#FF9EA1}
 #gbList .empty{background:none;border:2px dashed rgba(157,184,255,.4);color:var(--sky);text-align:center}
 #guestbook .x{position:absolute;top:14px;right:16px}
 @media (max-width:760px){
@@ -403,13 +422,63 @@ const GUESTBOOK_URL = 'https://script.google.com/macros/s/AKfycbxAcNNjQ3j7fzPLEx
   function ago(iso){ const s=(new Date(iso)-Date.now())/1000, a=Math.abs(s);
     if(a<60) return '剛剛'; if(a<3600) return rtf.format(Math.round(s/60),'minute'); if(a<86400) return rtf.format(Math.round(s/3600),'hour');
     if(a<86400*30) return rtf.format(Math.round(s/86400),'day'); return new Date(iso).toLocaleDateString('zh-TW'); }
+  const savedName=localStorage.getItem('nbGbName')||''; if(savedName) nameEl.value=savedName;
+  function entry(it,cls){
+    const d=document.createElement('div'); d.className=cls; d.innerHTML='<b></b><time></time><p></p>';
+    d.querySelector('b').textContent=it.name; const t=d.querySelector('time'); t.dateTime=it.t; t.textContent=ago(it.t);
+    d.querySelector('p').textContent=it.msg; return d;
+  }
+  function ownerBox(text){
+    const d=document.createElement('div'); d.className='gb-owner';
+    d.innerHTML=`<img src="${LOGO}" alt=""><div><b>N. B. Studio<span>站長</span></b><p></p></div>`;
+    d.querySelector('p').textContent=text; return d;
+  }
+  function replyForm(li,it){
+    const old=li.querySelector('.gb-rform'); if(old){ old.remove(); return; }
+    list.querySelectorAll('.gb-rform').forEach(f=>f.remove());
+    const f=document.createElement('form'); f.className='gb-rform'; f.noValidate=true;
+    f.innerHTML=`<label class="sr" for="r-${it.id}">回覆 ${it.name.replace(/[<&"]/g,'')}</label>
+      <input name="name" maxlength="30" placeholder="你的暱稱" autocomplete="nickname">
+      <textarea id="r-${it.id}" name="msg" maxlength="500" placeholder="回覆 ${it.name.replace(/[<&"]/g,'')}…"></textarea>
+      <div class="row"><button class="btn solid" type="submit">送出回覆</button><button class="btn" type="button" data-cancel>取消</button></div>
+      <p class="status" role="status" aria-live="polite"></p>`;
+    const n=f.querySelector('input'), m=f.querySelector('textarea'), st=f.querySelector('.status'), sb=f.querySelector('[type=submit]');
+    n.value=nameEl.value.trim()||localStorage.getItem('nbGbName')||'';
+    f.querySelector('[data-cancel]').onclick=()=>f.remove();
+    f.addEventListener('submit',async e=>{
+      e.preventDefault(); st.className='status';
+      const name=n.value.trim(), text=m.value.trim();
+      if(!name||!text){ st.classList.add('err'); st.textContent='請填寫暱稱和回覆內容。'; (name?m:n).focus(); return; }
+      sb.disabled=true; sb.textContent='送出中…';
+      try{ await post({name,msg:text,parent:it.id}); localStorage.setItem('nbGbName',name); if(!nameEl.value) nameEl.value=name; load(); }
+      catch(err){ st.classList.add('err'); st.textContent=err.message?`回覆沒有送出：${err.message}`:'回覆沒有送出：網路連線中斷，請稍後再試。'; sb.disabled=false; sb.textContent='送出回覆'; }
+    });
+    li.appendChild(f); (n.value?m:n).focus();
+  }
   function render(items){
     list.innerHTML='';
     if(!items.length){ list.innerHTML='<li class="empty">還沒有人留言。第一則留給你。</li>'; total.textContent=''; return; }
-    total.textContent=`${items.length} 則`;
-    for(const it of items){ const li=document.createElement('li'); li.innerHTML='<b></b><time></time><p></p>';
-      li.querySelector('b').textContent=it.name; const t=li.querySelector('time'); t.dateTime=it.t; t.textContent=ago(it.t);
-      li.querySelector('p').textContent=it.msg; list.appendChild(li); }
+    const nReplies=items.reduce((a,it)=>a+(it.replies?it.replies.length:0),0);
+    total.textContent=`${items.length} 則${nReplies?`，${nReplies} 則回覆`:''}`;
+    for(const it of items){
+      const li=document.createElement('li'); li.appendChild(entry(it,'gb-msg'));
+      if(it.owner) li.appendChild(ownerBox(it.owner));
+      if(it.replies&&it.replies.length){
+        const ul=document.createElement('div'); ul.className='gb-replies';
+        for(const r of it.replies){ const rd=entry(r,'gb-reply'); if(r.owner) rd.appendChild(ownerBox(r.owner)); ul.appendChild(rd); }
+        li.appendChild(ul);
+      }
+      if(it.id){
+        const rb=document.createElement('button'); rb.type='button'; rb.className='gb-rbtn';
+        rb.textContent=it.replies&&it.replies.length?`回覆（${it.replies.length}）`:'回覆';
+        rb.setAttribute('aria-label',`回覆 ${it.name} 的留言`); rb.onclick=()=>replyForm(li,it); li.appendChild(rb);
+      }
+      list.appendChild(li);
+    }
+  }
+  async function post(body){
+    const r=await fetch(GUESTBOOK_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+    const j=await r.json(); if(!j.ok) throw new Error(j.error||''); return j;
   }
   async function load(){
     if(!configured){ list.innerHTML='<li class="empty">留言板即將開放。</li>'; return; }
@@ -428,9 +497,8 @@ const GUESTBOOK_URL = 'https://script.google.com/macros/s/AKfycbxAcNNjQ3j7fzPLEx
     if(!configured){ status.classList.add('err'); status.textContent='留言板尚未開放，請稍後再來。'; return; }
     send.disabled=true; send.textContent='送出中…'; status.textContent='';
     try{
-      const r=await fetch(GUESTBOOK_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({name,msg:text,website:fd.get('website')||''})});
-      const j=await r.json();
-      if(!j.ok) throw new Error(j.error||'');
+      await post({name,msg:text,website:fd.get('website')||''});
+      localStorage.setItem('nbGbName',name);
       status.classList.add('ok'); status.textContent='已送出留言，謝謝你！';
       msg.value=''; countEl.textContent='0 / 500'; load();
     }catch(err){
