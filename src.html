@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>N. B. Studio｜不廢話的 AI、古詩與冷知識</title>
+<meta name="description" content="N. B. Studio（No Bull Shit!）：AI 趨勢、飛行健康、三十六計、漫話三國、唐詩與生活驚喜。__TOTAL__ 支影片，一鏡看完。">
+<meta name="theme-color" content="#0A1850">
+<link rel="icon" href="__LOGO__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,700..900,0..100&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+<style>
+:root{
+  --cobalt:#1B3FB4; --navy:#0A1850; --yellow:#FFD60A; --yolk:#F5B700; --paper:#F3F6FF; --sky:#9DB8FF;
+  --display:'Fraunces','Noto Serif TC',serif; --serif:'Noto Serif TC','Fraunces',serif; --sans:'Noto Sans TC',system-ui,sans-serif;
+  --pad:clamp(20px,5vw,72px);
+}
+*{box-sizing:border-box}
+html{background:var(--navy);color:var(--paper);-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);font-size:16px;line-height:1.7;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:fixed;left:12px;top:-60px;z-index:99;background:var(--yellow);color:var(--navy);padding:8px 14px;border-radius:999px;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px var(--pad);pointer-events:none}
+.bar>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:42px;height:42px;border-radius:50%;display:block;box-shadow:0 0 0 2px var(--yellow)}
+.brand span{font-family:var(--display);font-weight:900;font-variation-settings:'SOFT' 100,'opsz' 72;font-size:1.25rem;letter-spacing:.01em}
+.bar nav{display:flex;gap:10px}
+.btn{font:500 .95rem/1 var(--sans);display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;border:2px solid var(--yellow);background:transparent;color:var(--yellow);cursor:pointer;text-decoration:none;transition:background .2s,color .2s}
+.btn:hover{background:rgba(255,214,10,.12)}
+.btn.solid{background:var(--yellow);color:var(--navy);font-weight:700}
+.btn.solid:hover{background:#ffe352}
+
+/* hero */
+.hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:var(--cobalt);touch-action:pan-y}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.hero-copy{position:absolute;left:var(--pad);bottom:clamp(36px,9vh,110px);max-width:33rem;pointer-events:none}
+.hero-copy>*{pointer-events:auto}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.7rem,6vw,5.4rem);line-height:1.08;margin:0 0 .35em;color:var(--yellow);letter-spacing:.02em;text-shadow:0 2px 0 rgba(10,24,80,.35)}
+.hero p{margin:0 0 1.6em;font-size:clamp(1rem,1.25vw,1.12rem);line-height:1.85;max-width:29em;color:var(--paper)}
+.hero .acts{display:flex;flex-wrap:wrap;gap:12px}
+.hint{position:absolute;right:var(--pad);bottom:clamp(36px,9vh,110px);font-size:.85rem;color:var(--sky);display:flex;align-items:center;gap:10px;pointer-events:none}
+.hint i{display:block;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--sky);position:relative}
+.hint i::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--sky)}
+
+/* journey */
+.journey{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage::after{content:"";position:absolute;inset:auto 0 0 0;height:55%;background:linear-gradient(to top,rgba(10,24,80,.94) 10%,rgba(10,24,80,0));pointer-events:none}
+.label{position:absolute;left:var(--pad);bottom:clamp(40px,10vh,120px);z-index:2;max-width:31rem;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .35s,transform .45s,visibility .35s;pointer-events:none}
+.label.on{opacity:1;visibility:visible;transform:none}
+.label h2{font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,6.4vw,6rem);line-height:1.04;margin:0 0 .3em;color:var(--yellow);letter-spacing:.03em}
+.label h2 small{display:block;font-family:var(--display);font-variation-settings:'SOFT' 100;font-weight:800;font-size:.3em;letter-spacing:.02em;color:var(--sky);margin-top:.35em}
+.label p{margin:0 0 .6em;font-size:1.05rem;line-height:1.8}
+.label .count{font-size:.9rem;color:var(--sky)}
+.label.long h2{font-size:clamp(2.2rem,4.6vw,4.4rem)}
+.label.vertical h2{writing-mode:vertical-rl;font-size:clamp(2.4rem,5.6vw,5rem);margin:0 0 .4em;line-height:1.15}
+.label.vertical h2 small{display:none}
+.label.vertical{display:flex;gap:28px;align-items:flex-end;max-width:36rem}
+.label.outro{max-width:44rem;width:90vw;left:50%;bottom:clamp(30px,8vh,90px);transform:translate(-50%,14px);text-align:center;pointer-events:none}
+.label.outro.on{transform:translate(-50%,0);pointer-events:auto}
+.label.outro h2{font-size:clamp(2rem,4.6vw,4rem)}
+.label.outro p{margin:0 auto 1.2em;max-width:26em}
+.label.intro{max-width:40rem;width:90vw;left:50%;top:auto;transform:translate(-50%,14px);text-align:center}
+.label.intro.on{transform:translate(-50%,0)}
+.label.intro p{font-family:var(--serif);font-weight:700;font-size:clamp(1.2rem,2.2vw,1.7rem);color:var(--paper)}
+
+.rail{position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:6px;opacity:0;transition:opacity .4s}
+.rail.on{opacity:1}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:10px;font-size:.82rem;color:var(--sky);padding:3px 0;border-radius:4px}
+.rail button::after{content:"";width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;transition:all .25s}
+.rail button[aria-current="true"]{color:var(--yellow);font-weight:700}
+.rail button[aria-current="true"]::after{background:var(--yellow);width:12px;height:12px}
+.rail button:hover{color:var(--paper)}
+.rail button:focus-visible{outline:2px solid var(--yellow);outline-offset:4px}
+
+.tip{position:fixed;z-index:40;pointer-events:none;max-width:300px;background:var(--yellow);color:var(--navy);padding:10px 14px;border-radius:14px;font-size:.9rem;line-height:1.5;font-weight:500;opacity:0;transform:translate(16px,16px) scale(.96);transform-origin:0 0;transition:opacity .15s,transform .15s}
+.tip.on{opacity:1;transform:translate(16px,16px)}
+.tip b{display:block;font-weight:700}
+.tip span{font-size:.8rem;opacity:.75}
+
+.progress{position:absolute;left:0;top:0;height:3px;background:var(--yellow);z-index:3;width:0}
+
+/* footer */
+footer{background:var(--yellow);color:var(--navy);padding:clamp(48px,8vw,96px) var(--pad);display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,4vw,56px);align-items:center}
+footer img{width:clamp(110px,14vw,170px);border-radius:50%;display:block}
+footer h2{font-family:var(--display);font-variation-settings:'SOFT' 100,'opsz' 144;font-weight:900;font-size:clamp(2rem,5vw,4rem);line-height:1;margin:0 0 .35em}
+footer p{margin:0 0 1.2em;max-width:36em}
+footer .links{display:flex;gap:12px;flex-wrap:wrap}
+footer .btn{border-color:var(--navy);color:var(--navy)}
+footer .btn.solid{background:var(--navy);color:var(--yellow)}
+footer small{display:block;margin-top:1.6em;font-size:.82rem;opacity:.75}
+
+/* dialogs */
+dialog{border:0;padding:0;background:transparent;color:var(--paper);max-width:none;max-height:none}
+dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
+#player[open]{display:flex;gap:28px;align-items:center;justify-content:center;width:min(1180px,94vw);flex-wrap:wrap}
+#player .frame{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 0 0 3px var(--yellow)}
+#player .frame iframe{width:100%;height:100%;border:0;display:block}
+#player .frame.land{width:min(800px,92vw);aspect-ratio:16/9}
+#player .frame.port{height:min(78vh,720px);aspect-ratio:9/16}
+#player .meta{max-width:320px}
+#player h3{font-family:var(--serif);font-weight:900;font-size:1.5rem;line-height:1.35;margin:0 0 .4em;color:var(--yellow)}
+#player .meta p{color:var(--sky);margin:0 0 1.2em;font-size:.92rem}
+#player .meta div{display:flex;gap:10px;flex-wrap:wrap}
+
+#library[open]{width:100vw;height:100vh;height:100dvh;overflow:auto;background:var(--navy);padding:90px var(--pad) 80px}
+#library::backdrop{background:var(--navy)}
+#library .close{position:fixed;top:16px;right:var(--pad);z-index:2}
+#library>h2{font-family:var(--serif);font-weight:900;color:var(--yellow);font-size:clamp(2rem,4vw,3rem);margin:0 0 .2em}
+#library>p{color:var(--sky);margin:0 0 2em}
+#library section{margin:0 0 56px}
+#library h3{font-family:var(--serif);font-weight:900;font-size:1.6rem;margin:0 0 .2em}
+#library h3+p{color:var(--sky);margin:0 0 18px;max-width:40em}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.lgrid button{all:unset;cursor:pointer;display:block;border-radius:12px}
+.lgrid img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:block;background:var(--cobalt)}
+.lgrid .s img{aspect-ratio:9/16}
+.lgrid span{display:block;font-size:.86rem;line-height:1.45;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lgrid button:hover span{color:var(--yellow)}
+
+.nogl .journey{height:auto!important}
+.nogl .stage{display:none}
+
+@media (max-width:760px){
+  .bar nav .btn:not(.solid){display:none}
+  .brand span{display:none}
+  .hint{display:none}
+  .hero-copy{right:var(--pad);bottom:28px}
+  .hero p{font-size:.98rem;margin-bottom:1.2em}
+  .rail{display:none}
+  .label{right:var(--pad);bottom:30px}
+  .label p{font-size:.96rem}
+  .label.vertical{display:block}
+  .label.long h2{font-size:clamp(2.2rem,4.6vw,4.4rem)}
+.label.vertical h2{writing-mode:horizontal-tb}
+  footer{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#" id="skipList">跳到影片列表</a>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="N. B. Studio 回到頂端"><img src="__LOGO__" alt=""><span>N. B. Studio</span></a>
+  <nav aria-label="主要操作">
+    <button class="btn" type="button" id="openList">影片列表</button>
+    <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱頻道</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero" aria-label="N. B. Studio 頻道首頁">
+    <canvas id="heroGL" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <h1>不廢話，<br>直接講重點。</h1>
+      <p>N. B. 是 No Bull Shit 的縮寫。這裡聊 AI 趨勢、飛行健康、三十六計、三國和唐詩，也記下生活裡的小驚喜。往下捲，__TOTAL__ 支影片沿著同一條航線看完。</p>
+      <div class="acts">
+        <a class="btn solid" href="#journey" id="startBtn">開始看影片</a>
+        <a class="btn" href="https://www.youtube.com/@n.b.studio4666" target="_blank" rel="noopener">到 YouTube 頻道</a>
+      </div>
+    </div>
+    <div class="hint" aria-hidden="true"><i></i>移動游標，攪動水面</div>
+  </section>
+
+  <section class="journey" id="journey" aria-label="依主題瀏覽影片">
+    <div class="stage" id="stage">
+      <canvas id="jGL" aria-hidden="true"></canvas>
+      <div class="progress" id="prog"></div>
+      <div id="labels"></div>
+      <nav class="rail" id="rail" aria-label="主題"></nav>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <img src="__LOGO__" alt="N. B. Studio 標誌">
+  <div>
+    <h2>No Bull Shit!</h2>
+    <p>每週持續更新 AI、知識與生活的短片。看到喜歡的主題，訂閱後就不會錯過下一支。也歡迎留言分享你的故事。</p>
+    <div class="links">
+      <a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱 N. B. Studio</a>
+      <a class="btn" href="https://www.facebook.com/andy.hsu.79677" target="_blank" rel="noopener">Facebook</a>
+      <button class="btn" type="button" id="openList2">瀏覽全部影片</button>
+    </div>
+    <small>© N. B. Studio。影片與縮圖皆來自 YouTube 頻道 @n.b.studio4666。</small>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="presentation"></div>
+
+<dialog id="player" aria-label="播放影片">
+  <div class="frame land" id="pframe"></div>
+  <div class="meta">
+    <h3 id="ptitle"></h3>
+    <p id="pmeta"></p>
+    <div>
+      <a class="btn solid" id="pyt" href="#" target="_blank" rel="noopener">在 YouTube 觀看</a>
+      <button class="btn" type="button" id="pclose">關閉</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="library" aria-label="全部影片列表">
+  <button class="btn solid close" type="button" id="lclose">關閉列表</button>
+  <h2>全部影片</h2>
+  <p>__TOTAL__ 支影片，依 11 個主題排列。點任一支直接播放。</p>
+  <div id="lbody"></div>
+</dialog>
+
+<script>
+__DATA__
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const LOGO = '__LOGO__';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- categories ---------- */
+const CATS = [
+  {key:'ai', name:'AI 前線', en:'AI Frontline', form:'helix', desc:'AI 會說謊、會測謊，也會搶工作。從工程師的角度，講清楚它到底在做什麼。'},
+  {key:'fly', name:'飛行健康', en:'Flight & Health', form:'cabin', desc:'耳朵痛、腿部血栓、飛機餐為什麼難吃。空服員和航空醫學不會主動告訴你的事。'},
+  {key:'cargo', name:'航空貨運員阿成的日常', en:'Air Cargo Diaries', form:'conveyor', long:true, desc:'倉庫爆了、艙位沒了、航班延誤。航空貨運新人阿成的日常，順便告訴你包裹是怎麼上飛機的。'},
+  {key:'ji', name:'三十六計', en:'36 Stratagems', form:'grid', desc:'兩千年前的兵法，今天在會議室裡照樣上演。一計一支，看懂職場裡的招。'},
+  {key:'sg', name:'漫話三國', en:'Three Kingdoms', form:'tri', desc:'官渡、赤壁、空城計。用漫畫三分鐘講完一場仗。'},
+  {key:'poem', name:'我詩故我在', en:'Tang Poetry', form:'scroll', vertical:true, desc:'李白、杜甫、王維。一首詩一分鐘，慢下來讀。'},
+  {key:'quote', name:'偶爾文青一下', en:'Quotes', form:'sphere', desc:'從弘一大師到居禮夫人，一句話留給你自己想。'},
+  {key:'family', name:'漫話夫妻', en:'Couples & Family', form:'rings', desc:'家事誰做、話怎麼說。夫妻和父子之間的日常小戰爭。'},
+  {key:'life', name:'生活驚喜', en:'Little Surprises', form:'cloud', desc:'說走就走的坪林、波特蘭的森林木屋，還有第一次做的水煎包。'},
+  {key:'fusion', name:'AI 異想動物', en:'AI Creatures', form:'carousel', desc:'殺人鯨遇上大白鯊、河馬配金鷹。用 AI 把不可能放在一起。'},
+  {key:'world', name:'世界與奇聞', en:'World & Mysteries', form:'galaxy', desc:'世界排行、考古之謎、外星訊號。好奇心沒有分類的，都在這裡。'},
+];
+function classify([id,t,s,v,p]){
+  const has=(...a)=>a.some(i=>p.includes(i)), m=re=>re.test(t);
+  if(has(0)||m(/阿成/)) return 'cargo';
+  if(has(5)||m(/三十六計|瞞天過海|圍魏救趙|借刀|趁火打劫|以逸待勞|走為上策|欲擒故縱|反間/)) return 'ji';
+  if(has(9)||m(/三國|諸葛亮|曹操|關羽|呂布/)) return 'sg';
+  if(has(10)||m(/我詩故我在|唐詩|蘇東坡/)) return 'poem';
+  if(has(14)||m(/文青|勵志|名人名言/)) return 'quote';
+  if(has(8)||m(/漫話夫妻|父子|Father/i)) return 'family';
+  if(has(7)||m(/飛機|飛航|航空|空服|搭機|航班/)) return 'fly';
+  if(has(15)||m(/運用AI|Perfect Cutting/)) return 'fusion';
+  if(has(11,12)) return 'world';
+  if(has(1,2,4)||m(/AI|ChatGPT/)) return 'ai';
+  if(has(6,16)||m(/說走就走|初體驗|咖啡|水煎包|鳥|觸動|行旅|吃|My First/)) return 'life';
+  return 'world';
+}
+const VIDEOS = RAW.map(r=>({id:r[0], title:(r[1]||'').replace(/[\s\-–—:：]+$/,'')||'N. B. Studio 影片', short:!!r[2], views:r[3], cat:classify(r)}));
+CATS.forEach(c=>{ c.items=VIDEOS.filter(v=>v.cat===c.key); });
+const fmtViews=v=>v>=10000?`${(v/10000).toFixed(1).replace(/\.0$/,'')} 萬次觀看`:`${v.toLocaleString()} 次觀看`;
+const thumb=v=>v.short?`https://i.ytimg.com/vi/${v.id}/frame0.jpg`:`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`;
+
+/* ---------- player & library ---------- */
+const player=document.getElementById('player'), pframe=document.getElementById('pframe');
+function openVideo(v){
+  pframe.className='frame '+(v.short?'port':'land');
+  pframe.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0" title="${v.title.replace(/"/g,'&quot;')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  document.getElementById('ptitle').textContent=v.title;
+  const cat=CATS.find(c=>c.key===v.cat);
+  document.getElementById('pmeta').textContent=`${cat.name}｜${v.short?'Shorts':'影片'}｜${fmtViews(v.views)}`;
+  document.getElementById('pyt').href=v.short?`https://www.youtube.com/shorts/${v.id}`:`https://www.youtube.com/watch?v=${v.id}`;
+  player.showModal();
+}
+player.addEventListener('close',()=>{pframe.innerHTML='';});
+player.addEventListener('click',e=>{ if(e.target===player) player.close(); });
+document.getElementById('pclose').onclick=()=>player.close();
+
+const library=document.getElementById('library'); let libBuilt=false;
+function buildLibrary(target){
+  const frag=document.createDocumentFragment();
+  CATS.forEach(c=>{
+    const sec=document.createElement('section');
+    sec.innerHTML=`<h3>${c.name}</h3><p>${c.desc}（${c.items.length} 支）</p><div class="lgrid"></div>`;
+    const g=sec.querySelector('.lgrid');
+    c.items.forEach(v=>{
+      const b=document.createElement('button'); b.type='button'; if(v.short) b.className='s';
+      b.innerHTML=`<img loading="lazy" alt="" src="${v.short?`https://i.ytimg.com/vi/${v.id}/frame0.jpg`:`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}"><span></span>`;
+      b.querySelector('span').textContent=v.title;
+      b.onclick=()=>openVideo(v); g.appendChild(b);
+    });
+    frag.appendChild(sec);
+  });
+  target.appendChild(frag);
+}
+function openLibrary(e){ e&&e.preventDefault(); if(!libBuilt){buildLibrary(document.getElementById('lbody'));libBuilt=true;} library.showModal(); }
+document.getElementById('openList').onclick=openLibrary;
+document.getElementById('openList2').onclick=openLibrary;
+document.getElementById('skipList').onclick=openLibrary;
+document.getElementById('lclose').onclick=()=>library.close();
+
+/* ---------- shared ---------- */
+const logoImg=new Image(); logoImg.src=LOGO;
+const ready=Promise.all([
+  new Promise(r=>{ if(logoImg.complete) r(); else logoImg.onload=r; }),
+  document.fonts.load('900 64px Fraunces').catch(()=>{}),
+  document.fonts.load('900 64px "Noto Serif TC"').catch(()=>{}),
+]);
+const RING='No Bull Shit !  N. B. Studio !  ';
+function ringText(ctx,cx,cy,r,size,color,rot){
+  ctx.save(); ctx.font=`900 ${size}px Fraunces, serif`; ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const chars=[...RING], ws=chars.map(c=>ctx.measureText(c).width+size*.05), uw=ws.reduce((a,b)=>a+b,0);
+  const circ=2*Math.PI*r, reps=Math.max(1,Math.round(circ/uw)), sc=circ/(reps*uw); let a=rot;
+  for(let k=0;k<reps;k++) for(let j=0;j<chars.length;j++){
+    const w=ws[j]*sc, ang=a+(w/2)/r;
+    ctx.save(); ctx.translate(cx+Math.cos(ang)*r, cy+Math.sin(ang)*r); ctx.rotate(ang+Math.PI/2); ctx.fillText(chars[j],0,0); ctx.restore();
+    a+=w/r;
+  }
+  ctx.restore();
+}
+function drawLogo(ctx,cx,cy,r){
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+  const s=2*r/0.9; ctx.drawImage(logoImg,cx-s/2,cy-s/2,s,s); ctx.restore();
+}
+let glOK=true;
+try{ const t=document.createElement('canvas'); glOK=!!(t.getContext('webgl2')||t.getContext('webgl')); }catch(e){ glOK=false; }
+
+/* ======================================================
+   HERO — ripple water simulation
+   ====================================================== */
+const VS=`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }`;
+const SIM=`precision highp float;
+uniform sampler2D uPrev; uniform vec2 uTexel; uniform vec4 uDrop; uniform float uAspect; varying vec2 vUv;
+void main(){
+  vec2 c=texture2D(uPrev,vUv).rg;
+  float s=texture2D(uPrev,vUv+vec2(uTexel.x,0.)).r+texture2D(uPrev,vUv-vec2(uTexel.x,0.)).r
+         +texture2D(uPrev,vUv+vec2(0.,uTexel.y)).r+texture2D(uPrev,vUv-vec2(0.,uTexel.y)).r;
+  float h=(s*.5-c.g)*.986;
+  vec2 d=vUv-uDrop.xy; d.x*=uAspect;
+  h+=uDrop.z*(1.-smoothstep(0.,uDrop.w,length(d)));
+  gl_FragColor=vec4(h,c.r,0.,1.);
+}`;
+const DISP=`precision highp float;
+uniform sampler2D uTex,uH; uniform vec2 uTexel; varying vec2 vUv;
+void main(){
+  float l=texture2D(uH,vUv-vec2(uTexel.x,0.)).r, r=texture2D(uH,vUv+vec2(uTexel.x,0.)).r;
+  float d=texture2D(uH,vUv-vec2(0.,uTexel.y)).r, u=texture2D(uH,vUv+vec2(0.,uTexel.y)).r;
+  vec2 g=vec2(r-l,u-d);
+  vec3 col=texture2D(uTex,vUv-g*.06).rgb;
+  vec3 n=normalize(vec3(-g*5.,1.));
+  vec3 L=normalize(vec3(-.45,.55,.7));
+  float sp=pow(max(dot(reflect(-L,n),vec3(0.,0.,1.)),0.),36.);
+  col*=1.+(g.x-g.y)*1.4;
+  col+=sp*vec3(1.,.92,.55)*.75;
+  gl_FragColor=vec4(col,1.);
+}`;
+
+function initHero(){
+  const hero=document.getElementById('hero'), canvas=document.getElementById('heroGL');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1), scene=new THREE.Scene();
+  const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2)); scene.add(quad);
+  const simMat=new THREE.ShaderMaterial({vertexShader:VS,fragmentShader:SIM,uniforms:{uPrev:{value:null},uTexel:{value:new THREE.Vector2()},uDrop:{value:new THREE.Vector4()},uAspect:{value:1}}});
+  const dispMat=new THREE.ShaderMaterial({vertexShader:VS,fragmentShader:DISP,uniforms:{uTex:{value:null},uH:{value:null},uTexel:{value:new THREE.Vector2()}}});
+  const bg=document.createElement('canvas'), bctx=bg.getContext('2d');
+  const bgTex=new THREE.CanvasTexture(bg); bgTex.minFilter=THREE.LinearFilter; bgTex.generateMipmaps=false;
+  dispMat.uniforms.uTex.value=bgTex;
+  let rtA,rtB,W=1,H=1,center={x:.5,y:.5};
+  const mk=(w,h)=>new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,format:THREE.RGBAFormat,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false});
+
+  function drawBG(){
+    const dpr=Math.min(devicePixelRatio,2), w=bg.width=Math.min(2560,Math.round(W*dpr)), h=bg.height=Math.round(w*H/W);
+    const mobile=W<760, cx=w*(mobile?.5:.64), cy=h*(mobile?.36:.47);
+    center={x:cx/w,y:1-cy/h};
+    const gr=bctx.createRadialGradient(cx,cy,0,cx,cy,Math.hypot(w,h)*.7);
+    gr.addColorStop(0,'#2756DA'); gr.addColorStop(.55,'#1B3FB4'); gr.addColorStop(1,'#0E2780');
+    bctx.fillStyle=gr; bctx.fillRect(0,0,w,h);
+    const r0=Math.min(w,h)*(mobile?.2:.21), gap=r0*.34, maxR=Math.hypot(Math.max(cx,w-cx),Math.max(cy,h-cy));
+    let k=1;
+    for(let r=r0+gap*.75; r<maxR+gap; r+=gap, k++){
+      const a=Math.max(.1,.82-k*.085);
+      bctx.strokeStyle=`rgba(157,184,255,${a*.35})`; bctx.lineWidth=Math.max(1,w/1400);
+      bctx.beginPath(); bctx.arc(cx,cy,r+gap*.5,0,Math.PI*2); bctx.stroke();
+      ringText(bctx,cx,cy,r,gap*.5,`rgba(255,214,10,${a})`, k*.7);
+    }
+    if(!mobile){
+      const sc=bctx.createLinearGradient(0,0,w*.55,0);
+      sc.addColorStop(0,'rgba(10,24,80,.78)'); sc.addColorStop(1,'rgba(10,24,80,0)');
+      bctx.fillStyle=sc; bctx.fillRect(0,0,w*.55,h);
+    }else{
+      const sc=bctx.createLinearGradient(0,h,0,h*.45);
+      sc.addColorStop(0,'rgba(10,24,80,.9)'); sc.addColorStop(1,'rgba(10,24,80,0)');
+      bctx.fillStyle=sc; bctx.fillRect(0,h*.45,w,h*.55);
+    }
+    bctx.save(); bctx.shadowColor='rgba(5,12,50,.55)'; bctx.shadowBlur=r0*.25; bctx.shadowOffsetY=r0*.06;
+    bctx.fillStyle='#1B3FB4'; bctx.beginPath(); bctx.arc(cx,cy,r0,0,Math.PI*2); bctx.fill(); bctx.restore();
+    drawLogo(bctx,cx,cy,r0);
+    bgTex.needsUpdate=true;
+  }
+  function resize(){
+    W=hero.clientWidth||innerWidth||1280; H=hero.clientHeight||innerHeight||720; renderer.setSize(W,H,false);
+    const sw=Math.min(640,Math.round(W/2.5)), sh=Math.round(sw*H/W);
+    rtA&&rtA.dispose(); rtB&&rtB.dispose(); rtA=mk(sw,sh); rtB=mk(sw,sh);
+    renderer.setClearColor(0x000000,0);
+    for(const rt of [rtA,rtB]){ renderer.setRenderTarget(rt); renderer.clear(); }
+    renderer.setRenderTarget(null);
+    simMat.uniforms.uTexel.value.set(1/sw,1/sh); dispMat.uniforms.uTexel.value.set(1/sw,1/sh);
+    simMat.uniforms.uAspect.value=W/H;
+    drawBG();
+  }
+  const drops=[]; let last=null;
+  function addPointer(x,y){
+    const r=canvas.getBoundingClientRect(), u=(x-r.left)/r.width, v=1-(y-r.top)/r.height;
+    if(last){ const dx=(u-last.u)*W/H, dy=v-last.v, dist=Math.hypot(dx,dy), n=Math.min(6,Math.ceil(dist/.012));
+      for(let i=1;i<=n;i++) drops.push([last.u+(u-last.u)*i/n, last.v+(v-last.v)*i/n, Math.min(.09,.025+dist*.9), .018]); }
+    last={u,v};
+  }
+  hero.addEventListener('pointermove',e=>addPointer(e.clientX,e.clientY));
+  hero.addEventListener('pointerleave',()=>{last=null;});
+  hero.addEventListener('pointerdown',e=>{ const r=canvas.getBoundingClientRect(); drops.push([(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height,.35,.035]); });
+  function step(d){
+    simMat.uniforms.uPrev.value=rtA.texture;
+    simMat.uniforms.uDrop.value.set(d?d[0]:0,d?d[1]:0,d?d[2]:0,d?d[3]:.01);
+    quad.material=simMat; renderer.setRenderTarget(rtB); renderer.render(scene,cam);
+    [rtA,rtB]=[rtB,rtA];
+  }
+  let visible=true;
+  new IntersectionObserver(([e])=>{visible=e.isIntersecting;}).observe(hero);
+  addEventListener('resize',resize);
+  resize();
+  if(!reduce) setTimeout(()=>drops.push([center.x,center.y,.55,.05]),450);
+  return function frame(){
+    if(!visible) return;
+    const batch=drops.splice(0,8);
+    if(batch.length){ batch.forEach(d=>step(d)); } else step(null);
+    step(null);
+    quad.material=dispMat; dispMat.uniforms.uH.value=rtA.texture;
+    renderer.setRenderTarget(null); renderer.render(scene,cam);
+  };
+}
+
+/* ======================================================
+   JOURNEY — one continuous camera through 10 stations
+   ====================================================== */
+const V3=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
+const _o=new THREE.Object3D();
+function face(p,t){ _o.position.copy(p); _o.up.set(0,1,0); _o.lookAt(t); return _o.quaternion.clone(); }
+const SZ=v=>v.short?[1.35,2.4]:[3.2,1.8];
+function rng(seed){ return ()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+const FORMS={
+  helix(it){ const R=4.8, st=1.15, D=it.length*st;
+    return {slots:it.map((v,i)=>{ const a=i*.72+1.3, z=-i*st, p=V3(Math.cos(a)*R,Math.sin(a)*R*.85,z); return {p,q:face(p,V3(0,0,z+7))}; }),
+      pivot:V3(), spin:['z',.04], a:[V3(0,0,10),V3(0,0,-8)], b:[V3(0,0,-D+7),V3(0,0,-D-12)], depth:D}; },
+  cabin(it){ const st=3.7, D=Math.ceil(it.length/4)*st;
+    return {slots:it.map((v,i)=>{ const side=i%2?1:-1, row=Math.floor(i/2)%2, col=Math.floor(i/4), p=V3(side*4.5,row?1.5:-1.45,-col*st); return {p,q:face(p,V3(0,p.y*.4,p.z+6))}; }),
+      pivot:V3(), a:[V3(0,.2,9),V3(0,0,-8)], b:[V3(0,.2,-D+5),V3(0,0,-D-14)], depth:D}; },
+  grid(it){ const cols=6, rows=Math.ceil(it.length/cols);
+    return {slots:it.map((v,i)=>{ const c=i%cols, r=Math.floor(i/cols); return {p:V3((c-2.5)*2.5,((rows-1)/2-r)*3.05,0), q:new THREE.Quaternion(), size:v.short?[1.55,2.75]:[2.3,1.3]}; }),
+      pivot:V3(), a:[V3(0,0,23),V3(0,0,0)], b:[V3(10,-2,14),V3(0,0,-1)], depth:4}; },
+  tri(it){ const per=Math.ceil(it.length/3);
+    return {slots:it.map((v,i)=>{ const g=i%3, j=Math.floor(i/3), th=-Math.PI/2+g*Math.PI*2/3, base=V3(Math.cos(th)*8,0,Math.sin(th)*6-2);
+      const y=((per-1)/2-j)*2.95, p=base.clone().add(V3(Math.cos(j*1.1)*1.3,y,Math.sin(j*1.1)*1.3)); return {p,q:face(p,V3(p.x*.4,y*.6,30)), size:v.short?[1.55,2.75]:[2.9,1.63]}; }),
+      pivot:V3(), a:[V3(0,2,21),V3(0,0,-2)], b:[V3(-12,6,12),V3(0,0,-2)], depth:10}; },
+  scroll(it){ const sizes=it.map(v=>v.short?[1.35,2.4]:[2.6,1.46]); let x=0; const xs=sizes.map((s,i)=>{ if(i) x+=sizes[i-1][0]/2+.4+s[0]/2; return x; }); const L=x;
+    return {slots:it.map((v,i)=>{ const px=xs[i]-L/2, p=V3(px,Math.sin(i*.55)*.45,-(px*px)/110); return {p,q:face(p,V3(px*.55,0,22)), size:sizes[i]}; }),
+      pivot:V3(), a:[V3(-L/2+7,.6,11.5),V3(-L/2+7,0,-1)], b:[V3(L/2-7,.6,11.5),V3(L/2-7,0,-1)], depth:10}; },
+  sphere(it){ const R=7.4, piv=V3(0,0,-8), n=it.length, ga=Math.PI*(3-Math.sqrt(5));
+    return {slots:it.map((v,i)=>{ const y=1-(i+.5)/n*2, r=Math.sqrt(1-y*y), dir=V3(Math.cos(ga*i)*r,y,Math.sin(ga*i)*r), p=piv.clone().addScaledVector(dir,R); return {p,q:face(p,piv.clone().addScaledVector(dir,R*2)), size:v.short?[1.3,2.3]:[2.6,1.46]}; }),
+      pivot:piv, spin:['y',.09], a:[V3(0,0,15),V3(0,0,-8)], b:[V3(-14,5,2),V3(0,0,-8)], depth:17}; },
+  rings(it){ const R=6.4, h=Math.ceil(it.length/2);
+    return {slots:it.map((v,i)=>{ const A=i<h, j=A?i:i-h, n=A?h:it.length-h, a=j/n*Math.PI*2;
+      const p=A?V3(-3+R*Math.cos(a),R*Math.sin(a),-4):V3(3+R*Math.cos(a),R*Math.sin(a)*.5,-4+R*Math.sin(a)*.86);
+      return {p,q:face(p,V3(p.x*.25,p.y*.25,30)), size:v.short?[1.4,2.5]:[2.4,1.35]}; }),
+      pivot:V3(), a:[V3(0,1,18),V3(0,0,-4)], b:[V3(10,5,11),V3(0,0,-4)], depth:10}; },
+  conveyor(it){ const g=3.1, n=it.length;
+    return {slots:it.map((v,i)=>{ const p=V3((i-(n-1)/2)*g,0,0); return {p,q:face(p,V3(p.x*.4,0,20)), size:v.short?[1.95,3.45]:[3.4,1.9]}; }),
+      pivot:V3(), belt:true, a:[V3(-7,2.2,9.5),V3(0,-.3,0)], b:[V3(7,1.6,8.5),V3(.5,-.3,0)], depth:4}; },
+  cloud(it){ const R=rng(7);
+    return {slots:it.map((v,i)=>{ let x=(R()*2-1)*11, y=(R()*2-1)*5.5; const z=-(i/it.length)*26-R()*2; if(Math.abs(x)<3.2&&Math.abs(y)<2.4) x=Math.sign(x||1)*(3.2+R()*2.5); const p=V3(x,y,z); return {p,q:face(p,V3(x*.3,y*.3,z+16))}; }),
+      pivot:V3(), a:[V3(0,0,11),V3(0,0,-10)], b:[V3(0,0,-22),V3(0,0,-45)], depth:28}; },
+  carousel(it){ const R=6.6, piv=V3(0,0,-6), n=it.length;
+    return {slots:it.map((v,i)=>{ const a=i/n*Math.PI*2, p=piv.clone().add(V3(Math.sin(a)*R,i%2?.7:-.7,Math.cos(a)*R)); return {p,q:face(p,piv.clone().add(V3(Math.sin(a)*R*2,p.y,Math.cos(a)*R*2)))}; }),
+      pivot:piv, spin:['y',.16], a:[V3(0,2.5,10.5),V3(0,0,-6)], b:[V3(8,4,4),V3(0,0,-6)], depth:14}; },
+  galaxy(it){ const piv=V3(0,0,-10), m=Math.ceil(it.length/2);
+    return {slots:it.map((v,i)=>{ const arm=i%2, t=Math.floor(i/2)/m, r=2.6+t*12.5, ang=arm*Math.PI+t*3.8, p=piv.clone().add(V3(r*Math.cos(ang),Math.sin(i*1.7)*.7,r*Math.sin(ang))); return {p,q:face(p,V3(p.x*.15,30,p.z+9)), size:v.short?[1.5,2.65]:[3,1.69]}; }),
+      pivot:piv, spin:['y',.05], a:[V3(0,24,6),V3(0,0,-11)], b:[V3(0,15,-1),V3(0,0,-13)], depth:24}; },
+};
+
+function initJourney(){
+  const sec=document.getElementById('journey'), stage=document.getElementById('stage'), canvas=document.getElementById('jGL');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+  const NAVY=0x0A1850;
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(NAVY); scene.fog=new THREE.Fog(NAVY,24,92);
+  const camera=new THREE.PerspectiveCamera(52,1,.1,500);
+  const loader=new THREE.TextureLoader(); loader.setCrossOrigin('anonymous');
+  const geo=new THREE.PlaneGeometry(1,1);
+
+  /* logo disc + ring texture */
+  const lc=document.createElement('canvas'); lc.width=lc.height=1024; const lx=lc.getContext('2d');
+  const ringC=document.createElement('canvas'); ringC.width=ringC.height=1024; const rx=ringC.getContext('2d');
+  const logoTex=new THREE.CanvasTexture(lc), ringTex=new THREE.CanvasTexture(ringC);
+  logoTex.colorSpace=ringTex.colorSpace=THREE.SRGBColorSpace;
+  ready.then(()=>{ drawLogo(lx,512,512,500); logoTex.needsUpdate=true;
+    ringText(rx,512,512,440,58,'#FFD60A',0); ringText(rx,512,512,350,42,'rgba(157,184,255,.85)',1.2); ringTex.needsUpdate=true; });
+  function logoGroup(scale){
+    const g=new THREE.Group();
+    const disc=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:logoTex,transparent:true,side:THREE.DoubleSide}));
+    disc.scale.set(8*scale,8*scale,1);
+    const ring=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:ringTex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
+    ring.scale.set(19*scale,19*scale,1); ring.position.z=-.05;
+    g.add(ring,disc); g.userData={disc,ring}; return g;
+  }
+
+  /* stations */
+  const cards=[], keys=[], tgts=[];
+  const intro=logoGroup(1); scene.add(intro);
+  keys.push(V3(0,0,12),V3(0,0,-9)); tgts.push(V3(0,0,0),V3(0,0,-40));
+  let C=V3(0,0,-40); const lat=[-14,15,-13,14,-15,13,-14,15,-12,14,0];
+  CATS.forEach((c,si)=>{
+    const F=FORMS[c.form](c.items);
+    const grp=new THREE.Group(); grp.position.copy(C); scene.add(grp);
+    const rig=new THREE.Group(); rig.position.copy(F.pivot); grp.add(rig);
+    const R=rng(si*97+3);
+    c.items.forEach((v,j)=>{
+      const sl=F.slots[j], [w,h]=sl.size||SZ(v);
+      const mat=new THREE.MeshBasicMaterial({color:0x2a4fc8,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:true});
+      const mesh=new THREE.Mesh(geo,mat);
+      const frameM=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xFFD60A,transparent:true,opacity:0,side:THREE.DoubleSide}));
+      frameM.scale.set(1+.2/w,1+.2/h,1); frameM.position.z=-.02; mesh.add(frameM);
+      const fp=sl.p.clone().sub(F.pivot);
+      let dir=V3(fp.x,fp.y,0); if(dir.lengthSq()<.01) dir.set(R()-.5,R()-.5,0); dir.normalize(); dir.z=(R()-.5)*.8; dir.normalize();
+      const sp=fp.clone().addScaledVector(dir,20+R()*16);
+      const sq=new THREE.Quaternion().setFromEuler(new THREE.Euler(R()*6,R()*6,R()*6));
+      mesh.userData={v,w,h,fp,fq:sl.q,sp,sq,j,n:c.items.length,si,frame:frameM,hs:1,loaded:false};
+      rig.add(mesh); cards.push(mesh);
+    });
+    if(F.belt){ const bc=document.createElement('canvas'); bc.width=256; bc.height=64; const bx=bc.getContext('2d');
+      bx.fillStyle='#0E2780'; bx.fillRect(0,0,256,64); bx.fillStyle='#FFD60A';
+      for(let x=-64;x<256;x+=64){ bx.beginPath(); bx.moveTo(x,0); bx.lineTo(x+24,0); bx.lineTo(x+56,32); bx.lineTo(x+24,64); bx.lineTo(x,64); bx.lineTo(x+32,32); bx.closePath(); bx.fill(); }
+      const bt=new THREE.CanvasTexture(bc); bt.colorSpace=THREE.SRGBColorSpace; bt.wrapS=THREE.RepeatWrapping; bt.repeat.set(9,1);
+      const belt=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:bt,transparent:true,opacity:.9}));
+      belt.scale.set(c.items.length*3.1+14,2.4,1); belt.rotation.x=-Math.PI/2; belt.position.set(0,-1.95,.2); grp.add(belt); c.belt=bt; }
+    c.grp=grp; c.rig=rig; c.spin=F.spin;
+    keys.push(C.clone().add(F.a[0]),C.clone().add(F.b[0])); tgts.push(C.clone().add(F.a[1]),C.clone().add(F.b[1]));
+    C=C.clone().add(V3(lat[si],(si%3-1)*3,-(F.depth+44)));
+  });
+  const outro=logoGroup(1.1); outro.position.copy(C); scene.add(outro);
+  keys.push(C.clone().add(V3(0,-2,25))); tgts.push(C.clone().add(V3(0,-4.5,0)));
+  const N=keys.length;
+  const posCurve=new THREE.CatmullRomCurve3(keys,false,'centripetal',.5), tgtCurve=new THREE.CatmullRomCurve3(tgts,false,'centripetal',.5);
+
+  /* flight path + stars */
+  const pathPts=posCurve.getPoints(900).map(p=>p.clone().add(V3(0,-3.4,0)));
+  const pathLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathPts),new THREE.LineDashedMaterial({color:0xFFD60A,dashSize:.9,gapSize:1.4,transparent:true,opacity:.45}));
+  pathLine.computeLineDistances(); scene.add(pathLine);
+  const SR=rng(11), starN=2200, sp=new Float32Array(starN*3);
+  for(let i=0;i<starN;i++){ sp[i*3]=(SR()*2-1)*70; sp[i*3+1]=(SR()*2-1)*40; sp[i*3+2]=30+SR()*(C.z-70); }
+  const sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xFFE680,size:.13,transparent:true,opacity:.7})));
+
+  /* DOM: labels + rail */
+  const labelsEl=document.getElementById('labels'), rail=document.getElementById('rail'), prog=document.getElementById('prog');
+  const mkLabel=(cls,html)=>{ const d=document.createElement('div'); d.className='label '+cls; d.innerHTML=html; labelsEl.appendChild(d); return d; };
+  const introL=mkLabel('intro','<p>穿過標誌，11 個主題、__TOTAL__ 支影片排在同一條航線上。</p>');
+  CATS.forEach((c,i)=>{
+    const sh=c.items.filter(v=>v.short).length;
+    c.label=mkLabel(c.vertical?'vertical':c.long?'long':'',`<h2>${c.name}<small>${c.en}</small></h2><div><p>${c.desc}</p><span class="count">${c.items.length} 支影片${sh&&sh<c.items.length?`，其中 ${sh} 支 Shorts`:sh?'，全是 Shorts':''}。點卡片直接播放。</span></div>`);
+    const b=document.createElement('button'); b.type='button'; b.textContent=c.name; b.onclick=()=>goTo(2+2*i+.5); rail.appendChild(b); c.btn=b;
+  });
+  const outroL=mkLabel('outro','<h2>不廢話，下一支見。</h2><p>新影片會先出現在 YouTube。訂閱 N. B. Studio，AI、飛行和古詩的新內容都不會錯過。</p><a class="btn solid" href="https://www.youtube.com/@n.b.studio4666?sub_confirmation=1" target="_blank" rel="noopener">訂閱頻道</a>');
+
+  const vh=()=>stage.clientHeight||innerHeight;
+  function layout(){ sec.style.height=`${(N-1)*62+100}vh`; }
+  layout();
+  function goTo(k){ const top=sec.offsetTop, span=sec.offsetHeight-vh(); scrollTo({top:top+span*k/(N-1),behavior:reduce?'auto':'smooth'}); }
+  const progress=()=>{ const r=sec.getBoundingClientRect(), span=r.height-vh(); return Math.min(1,Math.max(0,-r.top/span)); };
+
+  /* picking */
+  const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(), tip=document.getElementById('tip');
+  let hovered=null, pointer=null, down=null;
+  canvas.style.touchAction='pan-y';
+  stage.addEventListener('pointermove',e=>{ pointer={x:e.clientX,y:e.clientY}; });
+  stage.addEventListener('pointerleave',()=>{ pointer=null; });
+  stage.addEventListener('pointerdown',e=>{ down={x:e.clientX,y:e.clientY,t:performance.now()}; pointer={x:e.clientX,y:e.clientY}; });
+  stage.addEventListener('pointerup',e=>{
+    if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null;
+    if(moved>8) return; pointer={x:e.clientX,y:e.clientY}; pick();
+    if(hovered) openVideo(hovered.userData.v);
+  });
+  function pick(){
+    if(!pointer){ hovered=null; return; }
+    const r=canvas.getBoundingClientRect(); ndc.set((pointer.x-r.left)/r.width*2-1,-(pointer.y-r.top)/r.height*2+1);
+    ray.setFromCamera(ndc,camera);
+    const live=cards.filter(m=>m.visible&&m.material.opacity>.7);
+    const hit=ray.intersectObjects(live,false)[0];
+    hovered=hit?hit.object:null;
+  }
+
+  function resize(){
+    const w=stage.clientWidth||innerWidth, h=stage.clientHeight||innerHeight; renderer.setSize(w,h,false);
+    camera.aspect=w/h; camera.fov=w<760?66:52; camera.updateProjectionMatrix(); layout();
+  }
+  addEventListener('resize',resize); resize();
+
+  let visible=false; new IntersectionObserver(([e])=>{visible=e.isIntersecting;}).observe(sec);
+  const camPos=posCurve.getPoint(0), camTgt=tgtCurve.getPoint(0);
+  const ss=(a,b,x)=>{ const t=Math.min(1,Math.max(0,(x-a)/(b-a))); return t*t*(3-2*t); };
+  const eo=t=>1-Math.pow(1-t,3);
+  const clock=new THREE.Clock(); let time=0;
+
+  function loadCard(m){
+    const u=m.userData; if(u.loaded) return; u.loaded=true;
+    const apply=(tex,crop)=>{ tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=4;
+      if(crop){ tex.repeat.set(.42,1); tex.offset.set(.29,0); }
+      m.material.map=tex; m.material.color.set(0xffffff); m.material.needsUpdate=true; };
+    loader.load(thumb(u.v),t=>apply(t,false),undefined,()=>{ loader.load(`https://i.ytimg.com/vi/${u.v.id}/hqdefault.jpg`,t=>apply(t,u.v.short)); });
+  }
+
+  return function frame(){
+    const dt=Math.min(.05,clock.getDelta()); if(!reduce) time+=dt;
+    if(!visible) return;
+    const p=progress(), k=p*(N-1);
+    prog.style.width=(p*100)+'%';
+    const tp=posCurve.getPoint(p), tt=tgtCurve.getPoint(p);
+    const damp=reduce?1:1-Math.pow(.0015,dt);
+    camPos.lerp(tp,damp); camTgt.lerp(tt,damp);
+    camera.position.copy(camPos); camera.lookAt(camTgt);
+
+    /* logos */
+    const dI=camera.position.z; intro.userData.disc.material.opacity=ss(.5,5,dI); intro.userData.ring.material.opacity=ss(.5,6,dI);
+    intro.visible=dI>.4; intro.userData.ring.rotation.z=time*.12; outro.userData.ring.rotation.z=-time*.1;
+
+    /* stations */
+    let active=-1, best=.3;
+    CATS.forEach((c,i)=>{
+      const A=2+2*i, B=A+1;
+      const pres=ss(A-.55,A-.1,k)*(1-ss(B+.1,B+.5,k));
+      c.label.classList.toggle('on',pres>.5);
+      if(pres>best){best=pres;active=i;}
+      const near=k>A-3.2&&k<B+2;
+      c.grp.visible=k>A-2&&k<B+1.6;
+      if(near) c.rig.children.forEach(loadCard);
+      if(c.spin&&c.grp.visible) c.rig.rotation[c.spin[0]]=time*c.spin[1];
+      if(c.belt&&c.grp.visible) c.belt.offset.x=-time*.35;
+    });
+    CATS.forEach((c,i)=>c.btn.setAttribute('aria-current',i===active?'true':'false'));
+    rail.classList.toggle('on',k>1.4&&k<N-1.6);
+    introL.classList.toggle('on',k<.7&&p>0.001);
+    outroL.classList.toggle('on',k>N-1.5);
+
+    /* cards */
+    pick();
+    for(const m of cards){
+      const u=m.userData, A=2+2*u.si, B=A+1;
+      if(!CATS[u.si].grp.visible){ m.visible=false; continue; }
+      const st=(u.j/u.n)*.35;
+      const b=reduce? (k>A-.6&&k<B+.6?1:0) : ss(A-1.3,A-.2,k-st)*(1-ss(B+.15,B+.95,k+st));
+      const e=eo(b);
+      m.visible=e>.01; if(!m.visible) continue;
+      m.position.lerpVectors(u.sp,u.fp,e); m.quaternion.slerpQuaternions(u.sq,u.fq,e);
+      const hv=m===hovered?1.13:1; u.hs+=(hv-u.hs)*.2;
+      const s=(.4+.6*e)*u.hs; m.scale.set(u.w*s,u.h*s,1);
+      m.material.opacity=e; u.frame.material.opacity=(u.hs-1)/.13*e;
+    }
+    if(hovered&&pointer){
+      const v=hovered.userData.v;
+      tip.innerHTML=`<b></b><span>${v.short?'Shorts':'影片'}，${fmtViews(v.views)}，點擊播放</span>`; tip.querySelector('b').textContent=v.title;
+      tip.style.left=pointer.x+'px'; tip.style.top=pointer.y+'px'; tip.classList.add('on'); stage.style.cursor='pointer';
+    }else{ tip.classList.remove('on'); stage.style.cursor=''; }
+    renderer.render(scene,camera);
+  };
+}
+
+/* ---------- boot ---------- */
+if(!glOK){
+  document.documentElement.classList.add('nogl');
+  buildLibrary(document.getElementById('journey')); libBuilt=false;
+}else{
+  await ready;
+  const loops=[];
+  try{ loops.push(initHero()); }catch(e){ console.error(e); }
+  try{ loops.push(initJourney()); }catch(e){ console.error(e); }
+  (function raf(){ loops.forEach(f=>f()); requestAnimationFrame(raf); })();
+}
+document.getElementById('startBtn').addEventListener('click',e=>{ e.preventDefault(); const s=document.getElementById('journey'); scrollTo({top:s.offsetTop+innerHeight*.9,behavior:reduce?'auto':'smooth'}); });
+</script>
+</body>
+</html>
