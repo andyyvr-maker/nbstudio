@@ -306,7 +306,7 @@ dialog::backdrop{background:rgba(6,14,52,.86);backdrop-filter:blur(6px)}
     <p class="status" id="gbStatus" role="status" aria-live="polite"></p>
   </form>
   <section class="wall" aria-label="大家的留言">
-    <div class="gb-ownerbar" id="gbOwnerBar" hidden><img src="__LOGO__" alt=""><span><b>站長模式已開啟</b></span><button type="button" id="gbOwnerOff">結束站長模式</button></div>
+    <div class="gb-ownerbar" id="gbOwnerBar" hidden><img id="gbOwnerImg" alt=""><span><b>站長模式已開啟</b></span><button type="button" id="gbOwnerOff">結束站長模式</button></div>
     <h3>大家的留言 <span id="gbTotal"></span></h3>
     <ul id="gbList"><li class="empty">正在讀取留言…</li></ul>
   </section>
@@ -448,6 +448,7 @@ const GUESTBOOK_URL = '__GUESTBOOK_URL__';
   }
   /* 站長模式：Email 連結 #owner=金鑰 → 存在這台裝置，向後端驗證後才啟用 */
   const ownerBar=document.getElementById('gbOwnerBar');
+  document.getElementById('gbOwnerImg').src=LOGO;
   let ownerKey=localStorage.getItem('nbOwnerKey')||'', isOwner=false, ownerChecked=false;
   const hashKey=(location.hash.match(/^#owner=([A-Za-z0-9]+)$/)||[])[1];
   if(hashKey){ ownerKey=hashKey; localStorage.setItem('nbOwnerKey',hashKey); history.replaceState(null,'',location.pathname+location.search); }
