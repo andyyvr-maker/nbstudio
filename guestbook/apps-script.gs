@@ -104,10 +104,38 @@ function sendNotice_(name, msg, when, parent) {
   });
 }
 
+/* ---------- 站長模式 ---------- */
+function ownerKey_() { return PropertiesService.getScriptProperties().getProperty('OWNER_KEY') || ''; }
+function isOwner_(k) { const key = ownerKey_(); return !!key && String(k || '') === key; }
+
+/** 站長回覆：寫入（或修改）該則留言的「站長回覆」欄。 */
+function ownerReply_(parentId, msg) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
+    const sh = sheet_();
+    const all = rows_(sh);
+    const n = sh.getLastRow();
+    const ids = n > 1 ? sh.getRange(2, 5, n - 1, 1).getValues().map(r => String(r[0])) : [];
+    const idx = ids.indexOf(String(parentId));
+    if (idx < 0 || !all.length) return json_({ ok: false, error: '要回覆的留言已不存在。' });
+    sh.getRange(idx + 2, 7).setValue(msg ? safe_(msg) : '');
+  } finally {
+    lock.releaseLock();
+  }
+  return json_({ ok: true });
+}
+
 function doPost(e) {
   let d = {};
   try { d = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, error: '資料格式錯誤。' }); }
   if (d.website) return json_({ ok: true });            // 機器人陷阱欄位
+  if (d.ownerKey !== undefined) {
+    if (!isOwner_(d.ownerKey)) return json_({ ok: false, error: '站長金鑰不正確，請重新點選 Email 裡的站長連結。' });
+    if (d.verify) return json_({ ok: true, owner: true });
+    if (!d.parent) return json_({ ok: false, error: '請選擇要回覆的留言。' });
+    return ownerReply_(String(d.parent), String(d.msg || '').trim().slice(0, MAX_MSG));
+  }
   const name = String(d.name || '').trim().slice(0, MAX_NAME);
   const msg = String(d.msg || '').trim().slice(0, MAX_MSG);
   const parentId = String(d.parent || '').trim();
@@ -131,6 +159,37 @@ function doPost(e) {
   }
   try { sendNotice_(name, msg, now, parent); } catch (err) { console.error(err); }  // 寄信失敗不影響留言
   return json_({ ok: true });
+}
+
+/**
+ * 開通站長模式：在編輯器上方選這個函式按「執行」。
+ * 會產生一把站長金鑰（存在這個專案的私密設定，不在程式碼裡），並把開通連結寄給你。
+ * 在要用來回覆的電腦或手機上點那個連結，該裝置就會進入站長模式。
+ * 想讓舊連結失效：先執行 resetOwnerKey，再執行一次 setupOwnerMode。
+ */
+function setupOwnerMode() {
+  const props = PropertiesService.getScriptProperties();
+  let key = props.getProperty('OWNER_KEY');
+  if (!key) {
+    key = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '').slice(0, 8);
+    props.setProperty('OWNER_KEY', key);
+  }
+  const link = SITE_URL + '#owner=' + key;
+  MailApp.sendEmail({
+    to: Session.getEffectiveUser().getEmail(),
+    name: 'N. B. Studio 網站',
+    subject: '🔑 N. B. Studio 站長模式開通連結',
+    body: '在要用來回覆留言的電腦或手機上點這個連結，該裝置就會進入站長模式：\n\n' + link +
+      '\n\n站長模式下，回覆留言會自動以「N. B. Studio 站長」身分送出，不用輸入暱稱。' +
+      '\n請不要把這封信轉寄給別人。若連結外流，在 Apps Script 執行 resetOwnerKey 再執行 setupOwnerMode 即可換新。',
+  });
+  console.log('已寄出站長開通連結到 ' + Session.getEffectiveUser().getEmail());
+}
+
+/** 讓所有裝置的站長模式失效（之後要再執行 setupOwnerMode 重新開通）。 */
+function resetOwnerKey() {
+  PropertiesService.getScriptProperties().deleteProperty('OWNER_KEY');
+  console.log('站長金鑰已清除。');
 }
 
 /** 在編輯器上方選這個函式按「執行」：寄一封測試信給自己。 */
