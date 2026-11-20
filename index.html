@@ -671,17 +671,19 @@ const GUESTBOOK_URL = 'https://script.google.com/macros/s/AKfycbxAcNNjQ3j7fzPLEx
   /* 站長模式：Email 連結 #owner=金鑰 → 存在這台裝置，向後端驗證後才啟用 */
   const ownerBar=document.getElementById('gbOwnerBar');
   document.getElementById('gbOwnerImg').src=LOGO;
-  let ownerKey=localStorage.getItem('nbOwnerKey')||'', isOwner=false, ownerChecked=false;
+  const OWNER_LS='ownerKey:'+(location.pathname.split('/').filter(Boolean)[0]||'local');
+  let ownerKey=localStorage.getItem(OWNER_LS)||'', isOwner=false, ownerChecked=false, fromLegacy=false;
+  if(!ownerKey&&localStorage.getItem('nbOwnerKey')){ ownerKey=localStorage.getItem('nbOwnerKey'); fromLegacy=true; } /* 舊版共用名稱：驗證成功才接收 */
   const hashKey=(location.hash.match(/^#owner=([A-Za-z0-9]+)$/)||[])[1];
-  if(hashKey){ ownerKey=hashKey; localStorage.setItem('nbOwnerKey',hashKey); history.replaceState(null,'',location.pathname+location.search); }
+  if(hashKey){ ownerKey=hashKey; fromLegacy=false; localStorage.setItem(OWNER_LS,hashKey); history.replaceState(null,'',location.pathname+location.search); }
   async function checkOwner(){
     if(ownerChecked||!ownerKey||!configured) return;
     ownerChecked=true;
-    try{ await post({ownerKey,verify:true}); isOwner=true; }
-    catch(err){ isOwner=false; if(/金鑰/.test(err.message)){ localStorage.removeItem('nbOwnerKey'); ownerKey=''; status.className='status err'; status.textContent=t('ownerExpired'); } else ownerChecked=false; }
+    try{ await post({ownerKey,verify:true}); isOwner=true; if(fromLegacy){ localStorage.setItem(OWNER_LS,ownerKey); fromLegacy=false; } }
+    catch(err){ isOwner=false; if(/金鑰/.test(err.message)){ if(fromLegacy){ fromLegacy=false; ownerKey=''; } else { localStorage.removeItem(OWNER_LS); ownerKey=''; status.className='status err'; status.textContent=t('ownerExpired'); } } else ownerChecked=false; }
     ownerBar.hidden=!isOwner;
   }
-  document.getElementById('gbOwnerOff').onclick=()=>{ localStorage.removeItem('nbOwnerKey'); ownerKey=''; isOwner=false; ownerBar.hidden=true; load(); };
+  document.getElementById('gbOwnerOff').onclick=()=>{ localStorage.removeItem(OWNER_LS); ownerKey=''; isOwner=false; ownerBar.hidden=true; load(); };
   const esc=s=>s.replace(/[<&"]/g,'');
   function replyForm(li,it){
     const old=li.querySelector('.gb-rform'); if(old){ old.remove(); return; }
@@ -757,7 +759,7 @@ const GUESTBOOK_URL = 'https://script.google.com/macros/s/AKfycbxAcNNjQ3j7fzPLEx
   if(hashKey) setTimeout(()=>{ dlg.showModal(); load(); },600);
   addEventListener('hashchange',()=>{
     const k=(location.hash.match(/^#owner=([A-Za-z0-9]+)$/)||[])[1]; if(!k) return;
-    ownerKey=k; localStorage.setItem('nbOwnerKey',k); history.replaceState(null,'',location.pathname+location.search);
+    ownerKey=k; fromLegacy=false; localStorage.setItem(OWNER_LS,k); history.replaceState(null,'',location.pathname+location.search);
     ownerChecked=false; isOwner=false; if(!dlg.open) dlg.showModal(); load();
   });
   document.getElementById('gbClose').onclick=()=>dlg.close();
